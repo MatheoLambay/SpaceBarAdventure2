@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.idle_image
         self.rect = self.image.get_rect(center=(400, 300))
         self.animation_speed = 0.15
+        
 
     def update(self, keys):
         dx, dy = 0, 0
@@ -49,6 +50,11 @@ class Player(pygame.sprite.Sprite):
             self.frame_index = 0
             self.image = self.idle_image
 
+        pygame.draw.rect(self.image, "red", self.image.get_rect(), width=1)
+       
+
+        
+
 
 # --- Initialisation ---
 pygame.init()
@@ -62,7 +68,7 @@ frames = load_frames("assets/south")
 
 player = Player(frames)
 all_sprites = pygame.sprite.Group(player)
-
+mur_rect = pygame.Rect(200, 200, 50, 50)
 # --- Boucle principale ---
 running = True
 while running:
@@ -73,9 +79,18 @@ while running:
 
     all_sprites.update(keys)
 
+
     screen.fill((30, 30, 30))
     all_sprites.draw(screen)
+    # rectangle du mur
+    
+    pygame.draw.rect(screen, (200,0,0), mur_rect)  # dessine le mur
+    # collision ?
+    if player.rect.colliderect(mur_rect):
+        print("Collision détectée !")
+
     pygame.display.flip()
     clock.tick(60)
+    
 
 pygame.quit()
