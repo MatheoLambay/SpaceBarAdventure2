@@ -3,6 +3,8 @@ import os
 from classes.player import Player
 from classes.camera import Camera
 from classes.map import Map
+from classes.pnj import PNJ
+from classes.building import Building
 
 # --- Fonction pour charger les frames d’un dossier ---
 def load_frames(folder_path):
@@ -31,25 +33,25 @@ obstacles = [
 ]
 
 map_data = [
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,2,2,0,0,0,0,1],
-    [1,0,0,3,3,0,0,0,0,1],
-    [1,0,0,2,2,0,0,0,0,1],
-    [1,1,1,1,1,1,1,0,1,1],
-    [1,1,1,0,0,0,0,0,1,1],
-    [1,1,1,0,0,0,1,0,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,4,0,1,1,1,1],
-    [1,90,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,1,0,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,2,2,0,0,0,0,1,1,1],
+    [1,0,0,3,3,0,0,0,0,1,1,1],
+    [1,0,0,2,2,0,0,0,0,1,1,1],
+    [1,1,1,1,1,1,1,0,1,1,1,1],
+    [1,1,1,0,0,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,4,0,1,1,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,0,0,0,0,0,1,1,1],
+    [1,1,1,0,0,0,0,0,0,1,1,1],
+    [1,1,1,0,0,0,0,0,0,1,1,1],
+    [1,1,1,0,0,0,0,0,0,1,1,1],
+    [1,1,1,0,0,0,0,0,0,1,1,1],
+    [1,1,1,1,0,1,1,1,1,1,1,1],
 ]
 tile_size = 64
 
@@ -63,6 +65,25 @@ obstacles = game_map.get_obstacles()
 map_width = 1600
 map_height = 1200
 camera = Camera(map_width, map_height)
+
+buildings = []
+b1_matrix = [
+    [2,2,2],
+    [2,2,2,2],
+    [2,2,2]
+]
+b1 = Building(b1_matrix, tile_size, pos_x=6, pos_y=12)
+buildings.append(b1)
+
+# Liste des positions des PNJs sur la matrice
+pnj_positions = [(6,3), (8,2), (10,5)]
+pnjs = []
+
+for tile_pos in pnj_positions:
+    pnjs.append(PNJ("assets/south/1.png", tile_pos, tile_size=64))
+
+# Boucle principale
+
 
 # --- Boucle principale ---
 running = True
@@ -87,7 +108,17 @@ while running:
         screen.blit(sprite.image, camera.apply(sprite.rect))
         pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
 
-    print(Map.get_tile(game_map, player.rect.center))
+   
+
+    
+
+    for pnj in pnjs:
+        pnj.update(player)
+        screen.blit(pnj.image, camera.apply(pnj.rect))
+        pygame.draw.rect(screen, (0,255,0), camera.apply(pnj.rect), 2)
+
+    for b in buildings:
+        b.draw(screen, camera, player.hitbox)
 
 
     pygame.display.flip()
