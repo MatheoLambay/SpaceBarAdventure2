@@ -35,7 +35,7 @@ class Map:
 
                 # choisir la couleur selon le type de tuile
                 if tile == 0:
-                    color = (100,200,100)  # sol
+                    img = pygame.image.load("assets\map\grass.png").convert_alpha()
                 elif tile == 1:
                     color = (0,0,255)      # mur
                 elif tile == 2:
@@ -43,13 +43,20 @@ class Map:
                     
                 elif tile == 3:
                     color = (139,69,19)    # pont
+                
+                elif tile == 4:
+                    rect = pygame.Rect(x,y,10,self.tile_size)
+                    self.obstacles.append(rect)
+
                 else:
                     color = (255,255,255)  # autre
 
-                if tile != 0:  # ne pas dessiner le sol pour voir les sprites en dessous
+                if tile != 0:  
+                   
                     pygame.draw.rect(surface, color, camera.apply(rect))
+                    
                 else:
-                    img = pygame.image.load("assets\map\grass.png").convert_alpha()
+                    
                     surface.blit(img, camera.apply(rect))
 
     def get_tile(self, position):
