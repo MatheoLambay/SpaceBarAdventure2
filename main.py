@@ -29,20 +29,19 @@ all_sprites = pygame.sprite.Group(player)
 
 # --- Obstacles (Rectangles) ---
 
-
 map_data = [
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,2,2,0,0,0,0,1,1,1],
-    [1,0,0,3,3,0,0,0,0,1,1,1],
-    [1,0,0,2,2,0,0,0,0,1,1,1],
+    [-4,-4,-4,1,1,1,1,1,1,1,1,1],
+    [-4,0,0,-1,-1,0,0,0,0,1,1,1],
+    [-4,0,0,0,0,0,0,0,0,1,1,1],
+    [1,0,0,-2,-2,0,0,0,0,1,1,1],
     [1,1,1,1,1,1,1,0,1,1,1,1],
     [1,1,1,0,0,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1,1,1],
+    [1,1,1,0,-3,0,1,1,1,1,1,1],
+    [1,1,1,0,-3,0,1,1,1,1,1,1],
+    [1,1,1,0,-3,0,1,1,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1,1,1],
-    [1,1,1,0,4,0,1,1,1,1,1,1],
-    [1,1,1,0,4,0,1,1,1,1,1,1],
-    [1,1,1,0,4,0,1,1,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1,1,1],
     [1,1,1,0,0,0,0,0,0,1,1,1],
     [1,1,1,0,0,0,0,0,0,1,1,1],
@@ -80,7 +79,7 @@ pnjs = []
 for tile_pos in pnj_positions:
     pnjs.append(PNJ("assets/south/1.png", tile_pos, tile_size=64))
 
-# Boucle principale
+
 
 
 # --- Boucle principale ---
@@ -97,9 +96,9 @@ while running:
     # --- Rendu ---
     game_map.draw(screen, camera)
 
-    # dessiner obstacles avec offset caméra
-    for obs,color in obstacles:
-        pygame.draw.rect(screen, color, camera.apply(obs))
+    # # dessiner obstacles avec offset caméra
+    # for obs,color in obstacles:
+    #     pygame.draw.rect(screen, color, camera.apply(obs))
 
     # dessiner joueur
     for sprite in all_sprites:

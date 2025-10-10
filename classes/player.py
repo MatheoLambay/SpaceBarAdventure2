@@ -41,24 +41,24 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += dx
         self.hitbox.x += dx  # Update hitbox position
         for obs in obstacles:
-            if self.hitbox.colliderect(obs[0]):
+            if self.hitbox.colliderect(obs):
                 if dx > 0:
-                    self.hitbox.right = obs[0].left
+                    self.hitbox.right = obs.left
                     self.rect.right = self.hitbox.right + (self.rect.width - self.hitbox.width) / 2
                 elif dx < 0:
-                    self.hitbox.left = obs[0].right
+                    self.hitbox.left = obs.right
                     self.rect.left = self.hitbox.left - (self.rect.width - self.hitbox.width) / 2
 
         # --- Collision Y ---
         self.rect.y += dy
         self.hitbox.y += dy  # Update hitbox position
         for obs in obstacles:
-            if self.hitbox.colliderect(obs[0]):
+            if self.hitbox.colliderect(obs):
                 if dy > 0:
-                    self.hitbox.bottom = obs[0].top
+                    self.hitbox.bottom = obs.top
                     self.rect.bottom = self.hitbox.bottom + (self.rect.height - self.hitbox.height) / 2
                 elif dy < 0:
-                    self.hitbox.top = obs[0].bottom
+                    self.hitbox.top = obs.bottom
                     self.rect.top = self.hitbox.top - (self.rect.height - self.hitbox.height) / 2
 
         # --- Tile Detection ---
