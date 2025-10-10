@@ -40,7 +40,7 @@ class Map:
                     color = (0,0,255)      # mur
                 elif tile == 2:
                     color = (255,0,0)      # rivière
-                    print("rivière")
+                    
                 elif tile == 3:
                     color = (139,69,19)    # pont
                 else:
@@ -51,3 +51,13 @@ class Map:
                 else:
                     img = pygame.image.load("assets\map\grass.png").convert_alpha()
                     surface.blit(img, camera.apply(rect))
+
+    def get_tile(self, position):
+        """Retourne le type de tuile à la position donnée"""
+        tile_x = position[0] // self.tile_size
+        tile_y = position[1] // self.tile_size
+
+        if 0 <= tile_y < len(self.map_data) and 0 <= tile_x < len(self.map_data[0]):
+            return self.map_data[tile_y][tile_x]
+        else:
+            return None  # Retourne None si hors de la map

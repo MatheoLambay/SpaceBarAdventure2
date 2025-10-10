@@ -1,5 +1,4 @@
 import pygame
-
 class Player(pygame.sprite.Sprite):
     def __init__(self, frames, pos):
         super().__init__()
@@ -11,8 +10,9 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-30, -20)  # hitbox plus petite que le sprite
         self.animation_speed = 0.15
+        self.current_tile = None # Add this line
 
-    def update(self, keys, obstacles):
+    def update(self, keys, obstacles, game_map): # Add game_map as argument
         dx, dy = 0, 0
 
         # --- Déplacements ---
@@ -60,4 +60,6 @@ class Player(pygame.sprite.Sprite):
                 elif dy < 0:
                     self.hitbox.top = obs.bottom
                     self.rect.top = self.hitbox.top - (self.rect.height - self.hitbox.height) / 2
-        
+
+        # --- Tile Detection ---
+        self.current_tile = game_map.get_tile(self.hitbox.center) # Update current_tile

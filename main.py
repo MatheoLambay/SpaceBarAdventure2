@@ -40,7 +40,7 @@ map_data = [
     [1,1,1,0,0,0,1,0,1,1],
     [1,1,1,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,4,0,1,1,1,1],
     [1,90,1,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1],
@@ -49,7 +49,7 @@ map_data = [
     [1,1,1,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1],
     [1,1,1,0,0,0,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,0,1,1,1,1,1],
 ]
 tile_size = 64
 
@@ -72,7 +72,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    all_sprites.update(keys, obstacles)
+    all_sprites.update(keys, obstacles, game_map) # Pass game_map
     camera.update(player)
 
     # --- Rendu ---
@@ -87,7 +87,7 @@ while running:
         screen.blit(sprite.image, camera.apply(sprite.rect))
         pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
 
-    
+    print(Map.get_tile(game_map, player.rect.center))
 
 
     pygame.display.flip()
