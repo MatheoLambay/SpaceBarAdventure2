@@ -18,8 +18,10 @@ class Map:
                 x = col_idx * tile_size
                 y = row_idx * tile_size
                 rect = pygame.Rect(x, y, tile_size, tile_size)
-                if tile == 1 or tile == 2:  # murs ou rivière = obstacles
-                    self.obstacles.append(rect)
+                if tile == 1: 
+                    self.obstacles.append((rect,"red"))
+                if tile == 2:  # murs ou rivière = obstacles
+                    self.obstacles.append((rect,"blue"))
 
     def get_obstacles(self):
         """Retourne la liste des obstacles pour collisions"""
@@ -46,12 +48,12 @@ class Map:
                 
                 elif tile == 4:
                     rect = pygame.Rect(x,y,10,self.tile_size)
-                    self.obstacles.append(rect)
+                    self.obstacles.append((rect,"purple"))
 
                 else:
                     color = (255,255,255)  # autre
 
-                if tile != 0:  
+                if tile != 0 and tile !=4:  
                    
                     pygame.draw.rect(surface, color, camera.apply(rect))
                     

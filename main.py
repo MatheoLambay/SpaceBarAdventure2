@@ -28,9 +28,7 @@ player = Player(frames, pos=(100, 100))
 all_sprites = pygame.sprite.Group(player)
 
 # --- Obstacles (Rectangles) ---
-obstacles = [
-    
-]
+
 
 map_data = [
     [1,1,1,1,1,1,1,1,1,1,1,1],
@@ -99,9 +97,9 @@ while running:
     # --- Rendu ---
     game_map.draw(screen, camera)
 
-    # # dessiner obstacles avec offset caméra
-    # for obs in obstacles:
-    #     pygame.draw.rect(screen, (200, 0, 0), camera.apply(obs))
+    # dessiner obstacles avec offset caméra
+    for obs,color in obstacles:
+        pygame.draw.rect(screen, color, camera.apply(obs))
 
     # dessiner joueur
     for sprite in all_sprites:
