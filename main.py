@@ -1,5 +1,8 @@
 import pygame
 import os
+from classes.player import Player
+from classes.camera import Camera
+from classes.map import Map
 
 # --- Fonction pour charger les frames d’un dossier ---
 def load_frames(folder_path):
@@ -11,64 +14,56 @@ def load_frames(folder_path):
     return frames
 
 
-# --- Classe Player ---
-class Player(pygame.sprite.Sprite):
-    def __init__(self, frames):
-        super().__init__()
-        self.frames = frames
-        self.idle_image = self.frames[0]  # 1.png = frame de repos
-        self.walk_frames = self.frames[1:]  # les autres frames = marche
-        self.frame_index = 0
-        self.image = self.idle_image
-        self.rect = self.image.get_rect(center=(400, 300))
-        self.animation_speed = 0.15
-        
-
-    def update(self, keys):
-        dx, dy = 0, 0
-
-        # --- Déplacements ---
-        if keys[pygame.K_UP]:
-            dy = -1
-        if keys[pygame.K_DOWN]:
-            dy = 1
-        if keys[pygame.K_LEFT]:
-            dx = -1
-        if keys[pygame.K_RIGHT]:
-            dx = 1
-
-        moving = dx != 0 or dy != 0
-
-        # --- Animation ---
-        if moving:
-            self.frame_index += self.animation_speed
-            if self.frame_index >= len(self.walk_frames):
-                self.frame_index = 0
-            self.image = self.walk_frames[int(self.frame_index)]
-            self.rect.move_ip(dx * 4, dy * 4)
-        else:
-            self.frame_index = 0
-            self.image = self.idle_image
-
-        pygame.draw.rect(self.image, "red", self.image.get_rect(), width=1)
-       
-
-        
-
-
 # --- Initialisation ---
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Animation avec image de repos")
+pygame.display.set_caption("Jeu avec collisions et scrolling")
 clock = pygame.time.Clock()
 
-# --- Chargement des images ---
-# Dossier : assets/south/
-frames = load_frames("assets/south")
-
-player = Player(frames)
+# --- Charger les frames du joueur ---
+frames = load_frames("assets/south")  # 1.png = repos, 2.png+ = marche
+player = Player(frames, pos=(100, 100))
 all_sprites = pygame.sprite.Group(player)
-mur_rect = pygame.Rect(200, 200, 50, 50)
+
+# --- Obstacles (Rectangles) ---
+obstacles = [
+    
+]
+
+map_data = [
+    [1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,2,2,0,0,0,0,1],
+    [1,0,0,3,3,0,0,0,0,1],
+    [1,0,0,2,2,0,0,0,0,1],
+    [1,1,1,1,1,1,1,0,1,1],
+    [1,1,1,0,0,0,0,0,1,1],
+    [1,1,1,0,0,0,1,0,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,90,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,0,0,0,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1],
+]
+tile_size = 64
+
+# créer la map
+game_map = Map(map_data, tile_size)
+
+# obstacles pour collisions
+obstacles = game_map.get_obstacles()
+
+# --- Caméra ---
+map_width = 1600
+map_height = 1200
+camera = Camera(map_width, map_height)
+
 # --- Boucle principale ---
 running = True
 while running:
@@ -77,20 +72,25 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    all_sprites.update(keys)
+    all_sprites.update(keys, obstacles)
+    camera.update(player)
 
+    # --- Rendu ---
+    game_map.draw(screen, camera)
 
-    screen.fill((30, 30, 30))
-    all_sprites.draw(screen)
-    # rectangle du mur
+    # # dessiner obstacles avec offset caméra
+    # for obs in obstacles:
+    #     pygame.draw.rect(screen, (200, 0, 0), camera.apply(obs))
+
+    # dessiner joueur
+    for sprite in all_sprites:
+        screen.blit(sprite.image, camera.apply(sprite.rect))
+        pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
+
     
-    pygame.draw.rect(screen, (200,0,0), mur_rect)  # dessine le mur
-    # collision ?
-    if player.rect.colliderect(mur_rect):
-        print("Collision détectée !")
+
 
     pygame.display.flip()
     clock.tick(60)
-    
 
 pygame.quit()
