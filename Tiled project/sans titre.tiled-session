@@ -1,0 +1,29 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
+    "fileStates": {
+        "Hills.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Mathéo/Desktop",
+    "last.imagePath": "C:/Users/Mathéo/Desktop/Tilesets",
+    "map.lastUsedExportFilter": "Fichiers CSV (*.csv)",
+    "map.orientation": "2",
+    "openFiles": [
+        "Hills.tsx"
+    ],
+    "project": "sans titre.tiled-project",
+    "recentFiles": [
+        "Hills.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
