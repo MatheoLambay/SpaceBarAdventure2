@@ -15,17 +15,32 @@ class Map:
         self.nohitbox_tiles = self.load_tileset_as_dict("assets/map/tileset.png", tile_size)
         self.hitbox_tiles = self.load_tileset_as_dict("assets/map/tilesethitbox.png", tile_size,False)
         self.textures = {**self.nohitbox_tiles, **self.hitbox_tiles}
-        print(self.textures)
-        # self.textures = {
-        #     0: pygame.image.load("assets\map\grass.png").convert_alpha(),
-        #     1: pygame.image.load("assets/map/rock.png").convert_alpha(),
-        #     -4: pygame.image.load("assets/map/rock.png").convert_alpha(),
-        #     -1: pygame.image.load("assets/map/river1.png").convert_alpha(),
-        #     -2: pygame.image.load("assets/map/river2.png").convert_alpha(),
-        #     -3: pygame.image.load("assets/map/leftwall.png").convert_alpha(),
-        # }
-
+       
         self.obstacles = []
+        self.special_tiles = {
+            #largeur, hauteur, offset_x, offset_y 
+            -4:((self.tile_size, self.tile_size//2,0,0),),
+            # -12:((10, self.tile_size),(self.tile_size,10)),
+            # -13:((self.tile_size,10),),
+            # -14:((self.tile_size,10),),
+            # -22:((10,self.tile_size),),
+            -24:((10, tile_size, tile_size - 10, 0),),
+            # -32:((10,self.tile_size),()),
+        }  
+
+        for row_idx, row in enumerate(self.map_data):
+            for col_idx, tile in enumerate(row):
+                x = col_idx * self.tile_size
+                y = row_idx * self.tile_size
+                if tile < 0:
+                    if tile in self.special_tiles:
+                        for w, h, ox, oy in self.special_tiles[tile]:
+                            self.obstacles.append(pygame.Rect(x + ox, y + oy, w, h))
+                    else:
+                        self.obstacles.append(pygame.Rect(x, y, self.tile_size, self.tile_size))
+
+       
+
     
 
 
@@ -59,16 +74,16 @@ class Map:
                 x = col_idx * self.tile_size
                 y = row_idx * self.tile_size
 
-                if tile == -1:
-                    rect = pygame.Rect(x, y, 9, self.tile_size)
-                if tile == -4:
-                    rect = pygame.Rect(x, y, self.tile_size, self.tile_size//2)
-                else:
-                    rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
+                # if tile == -1:
+                #     rect = pygame.Rect(x, y, 9, self.tile_size)
+                # if tile == -4:
+                #     rect = pygame.Rect(x, y, self.tile_size, self.tile_size//2)
+                # else:
+                rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
                 
                 img = self.textures[tile]
-                if tile < 0:
-                    self.obstacles.append((rect))
+                # if tile < 0:
+                #     self.obstacles.append((rect))
                 
 
                 surface.blit(img, camera.apply(rect))
