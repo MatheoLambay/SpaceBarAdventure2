@@ -20,12 +20,14 @@ class Map:
         self.special_tiles = {
             #largeur, hauteur, offset_x, offset_y 
             -4:((self.tile_size, self.tile_size//2,0,0),),
-            # -12:((10, self.tile_size),(self.tile_size,10)),
-            # -13:((self.tile_size,10),),
-            # -14:((self.tile_size,10),),
-            # -22:((10,self.tile_size),),
+            -12:((10, self.tile_size,0,0),(self.tile_size,10,0,0)),
+            -13:((self.tile_size,10,0,0),),
+            -14:((self.tile_size,10,0,0),(10,self.tile_size, self.tile_size-10,0)),
+            -22:((10,self.tile_size,0,0),),
             -24:((10, tile_size, tile_size - 10, 0),),
-            # -32:((10,self.tile_size),()),
+            -32:((10,self.tile_size,0,0),(self.tile_size,10,0,self.tile_size - 10)),
+            -33:((self.tile_size,10,0,self.tile_size-10),),
+            -34:((self.tile_size,10,0,self.tile_size-10),(10,self.tile_size,self.tile_size-10,0))
         }  
 
         for row_idx, row in enumerate(self.map_data):
