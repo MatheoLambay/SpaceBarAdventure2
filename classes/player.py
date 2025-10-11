@@ -10,9 +10,13 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-30, -20)  # hitbox plus petite que le sprite
         self.animation_speed = 0.15
-        self.current_tile = None # Add this line
+        self.current_tile = None 
+        self.control_enabled = True 
 
     def update(self, keys, obstacles, game_map): # Add game_map as argument
+        if not self.control_enabled:
+            return
+
         dx, dy = 0, 0
 
         # --- Déplacements ---
