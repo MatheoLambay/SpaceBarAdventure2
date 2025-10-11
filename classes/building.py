@@ -1,12 +1,12 @@
 import pygame
 
 class Building:
-    def __init__(self, matrix, tile_size, pos_x, pos_y):
+    def __init__(self, matrix, textures, tile_size, pos_x, pos_y):
         self.matrix = matrix
         self.tile_size = tile_size
         self.x = pos_x
         self.y = pos_y
-        
+        self.textures = textures
 
     def is_player_inside(self, player_rect):
         
@@ -26,12 +26,18 @@ class Building:
             for c,tile in enumerate(row):
                 rect = pygame.Rect(self.x*64 + c*self.tile_size, self.y*64 + r*self.tile_size,
                                    self.tile_size, self.tile_size)
-                if tile==1:
-                    color=(150,0,0)
-                elif tile==2:
-                    if self.is_player_inside(player_rect):
-                        continue
-                    color=(139,69,19)
-                else:
-                    color=(255,255,255)
-                pygame.draw.rect(surface, color, camera.apply(rect))
+                
+                if self.is_player_inside(player_rect):
+                    break
+                img = self.textures[tile]
+                # if tile < 0:
+                #     self.obstacles.append((rect))
+                surface.blit(img, camera.apply(rect))
+                # if tile==1:
+                #     color=(150,0,0)
+                # elif tile==2:
+                #     
+                #     color=(139,69,19)
+                # else:
+                #     color=(255,255,255)
+                # pygame.draw.rect(surface, color, camera.apply(rect))

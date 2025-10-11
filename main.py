@@ -18,6 +18,24 @@ def load_frames(folder_path):
             frames.append(frame)
     return frames
 
+def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
+    image = pygame.image.load(path).convert_alpha()
+    tiles = {}
+    if positive_ids_only:
+        id_counter = 0
+    else:
+        id_counter = -1
+
+    for y in range(0, image.get_height(), tile_size):
+        for x in range(0, image.get_width(), tile_size):
+            tile = image.subsurface((x, y, tile_size, tile_size))
+            tiles[id_counter] = tile
+            if positive_ids_only:
+                id_counter += 1
+            else:
+                id_counter -= 1
+
+    return tiles
 
 # --- Initialisation ---
 pygame.init()
@@ -59,12 +77,17 @@ map_data = [
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 
 ]
+nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
+hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
+roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
+textures = {**nohitbox_tiles, **hitbox_tiles}
+
 
 
 tile_size = 64
 
 # créer la map
-game_map = Map(map_data, tile_size)
+game_map = Map(map_data, tile_size,textures)
 
 # obstacles pour collisions
 obstacles = game_map.get_obstacles()
@@ -76,7 +99,7 @@ camera = Camera(map_width, map_height)
 
 buildings = []
 b1_matrix = [
-    [2,2,2,2,2,2,2],
+    [0,2,2,2,2,2,2],
     [2,2,2,2,2,2,2],
     [2,2,2,2,2,2,2],
     [2,2,2,2,2,2,2],
@@ -84,7 +107,8 @@ b1_matrix = [
     [2,2,2,2,2,2,2],
     [2,2,2,2,2,2,2] 
 ]
-b1 = Building(b1_matrix, tile_size, pos_x=11, pos_y=9)
+
+b1 = Building(b1_matrix,roofs_tiles, tile_size, pos_x=11, pos_y=9)
 buildings.append(b1)
 
 # Liste des positions des PNJs sur la matrice

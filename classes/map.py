@@ -1,7 +1,7 @@
 import pygame
 
 class Map:
-    def __init__(self, map_data, tile_size):
+    def __init__(self, map_data, tile_size, textures):
         """
         map_data : liste de listes avec les tuiles
         tile_size : taille d'une tuile en pixels
@@ -10,11 +10,11 @@ class Map:
         self.tile_size = tile_size
         self.height = len(map_data) * tile_size
         self.width = len(map_data[0]) * tile_size
-
+        self.textures = textures
         
-        self.nohitbox_tiles = self.load_tileset_as_dict("assets/map/tileset.png", tile_size)
-        self.hitbox_tiles = self.load_tileset_as_dict("assets/map/tilesethitbox.png", tile_size,False)
-        self.textures = {**self.nohitbox_tiles, **self.hitbox_tiles}
+        # self.nohitbox_tiles = self.load_tileset_as_dict("assets/map/tileset.png", tile_size)
+        # self.hitbox_tiles = self.load_tileset_as_dict("assets/map/tilesethitbox.png", tile_size,False)
+        # self.textures = {**self.nohitbox_tiles, **self.hitbox_tiles}
        
         self.obstacles = []
         self.special_tiles = {
@@ -46,24 +46,7 @@ class Map:
     
 
 
-    def load_tileset_as_dict(self,path, tile_size, positive_ids_only=True):
-        image = pygame.image.load(path).convert_alpha()
-        tiles = {}
-        if positive_ids_only:
-            id_counter = 0
-        else:
-            id_counter = -1
-
-        for y in range(0, image.get_height(), tile_size):
-            for x in range(0, image.get_width(), tile_size):
-                tile = image.subsurface((x, y, tile_size, tile_size))
-                tiles[id_counter] = tile
-                if positive_ids_only:
-                    id_counter += 1
-                else:
-                    id_counter -= 1
-
-        return tiles
+    
 
     def get_obstacles(self):
         """Retourne la liste des obstacles pour collisions"""
