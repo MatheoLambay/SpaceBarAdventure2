@@ -61,6 +61,8 @@ class Map:
 
                 if tile == -1:
                     rect = pygame.Rect(x, y, 9, self.tile_size)
+                if tile == -4:
+                    rect = pygame.Rect(x, y, self.tile_size, self.tile_size//2)
                 else:
                     rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
                 
