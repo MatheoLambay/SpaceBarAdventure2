@@ -104,7 +104,7 @@ tile_size = 64
 game_map = Map(map_data, tile_size,textures)
 
 # obstacles pour collisions
-obstacles = game_map.get_obstacles()
+obstacles,obstacles_coord = game_map.get_obstacles()
 
 # --- Caméra ---
 map_width = len(map_data[0]) * tile_size
@@ -182,7 +182,9 @@ while running:
         
 
     all_sprites.update(keys, obstacles, game_map,all_ennemis) # Pass game_map
-    all_ennemis.update(keys, obstacles, game_map)
+
+    
+    all_ennemis.update(player.rect, obstacles)
     
     camera.update(player)
 
@@ -199,7 +201,7 @@ while running:
         # pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
     
     for ennemie in all_ennemis:
-        
+        # ennemie.update(keys, obstacles, game_map,player)
         screen.blit(ennemie.image,camera.apply(ennemie.rect))
         pygame.draw.rect(screen, (0,255,0), camera.apply(ennemie.hitbox), 2)
 

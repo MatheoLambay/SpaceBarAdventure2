@@ -17,6 +17,7 @@ class Map:
         # self.textures = {**self.nohitbox_tiles, **self.hitbox_tiles}
        
         self.obstacles = []
+        self.obstacles_coords = []
         self.special_tiles = {
             #largeur, hauteur, offset_x, offset_y 
             -4:((self.tile_size, self.tile_size//2,0,0),),
@@ -38,19 +39,15 @@ class Map:
                     if tile in self.special_tiles:
                         for w, h, ox, oy in self.special_tiles[tile]:
                             self.obstacles.append(pygame.Rect(x + ox, y + oy, w, h))
+                            self.obstacles_coords.append((x + ox, y + oy, w, h))
                     else:
                         self.obstacles.append(pygame.Rect(x, y, self.tile_size, self.tile_size))
+                        self.obstacles_coords.append((x, y, self.tile_size, self.tile_size))
 
        
-
-    
-
-
-    
-
     def get_obstacles(self):
         """Retourne la liste des obstacles pour collisions"""
-        return self.obstacles
+        return self.obstacles, self.obstacles_coords
 
     def draw(self, surface, camera):
         """Dessine la map sur l'écran avec la caméra"""
