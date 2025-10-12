@@ -184,7 +184,7 @@ while running:
     all_sprites.update(keys, obstacles, game_map,all_ennemis) # Pass game_map
 
     
-    all_ennemis.update(player.rect, obstacles)
+    all_ennemis.update(player.rect, obstacles,map_width,map_height,tile_size)
     
     camera.update(player)
 
