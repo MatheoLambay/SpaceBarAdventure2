@@ -205,6 +205,7 @@ while running:
     
 
     pygame.display.flip()
+    
         # --- Empêche la souris de sortir de la fenêtre ---
     mx, my = pygame.mouse.get_pos()
     sw, sh = screen.get_size()

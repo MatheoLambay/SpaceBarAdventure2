@@ -27,7 +27,6 @@ class PNJ(pygame.sprite.Sprite):
             if keys[pygame.K_RETURN]:
                 print("PNJ :" + self.talk)
         
+            #affiche le bouton d'interaction sur le pnj
             interaction_rect = self.interaction_img.get_rect(topright=self.rect.topright)
-
-            # Apply the camera offset to the interaction rect
             screen.blit(self.interaction_img, camera.apply(interaction_rect))
