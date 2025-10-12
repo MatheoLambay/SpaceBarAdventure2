@@ -8,6 +8,7 @@ from classes.building import Building
 from utility.eventManager import EventManager
 from utility.eventMove import MoveEvent
 from utility.eventWait import WaitEvent
+from classes.badguy import Badguy
 
 # --- Fonction pour charger les frames d’un dossier ---
 def load_frames(folder_path):
@@ -37,16 +38,29 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
 
     return tiles
 
+
 # --- Initialisation ---
 pygame.init()
+pygame.mouse.set_visible(False) 
+pygame.event.set_grab(True)
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Jeu avec collisions et scrolling")
 clock = pygame.time.Clock()
 
 # --- Charger les frames du joueur ---
-frames = load_frames("assets/south")  # 1.png = repos, 2.png+ = marche
+frames_south = load_frames("assets/player/animations/walk-1/south")  # 1.png = repos, 2.png+ = marche
+frames_north = load_frames("assets/player/animations/walk-1/north")
+frames_east = load_frames("assets/player/animations/walk-1/east")
+frames_west = load_frames("assets/player/animations/walk-1/west")
+frames = {"S":frames_south, "N":frames_north, "E":frames_east, "W":frames_west}
+
 player = Player(frames, pos=(14*64, 4*64))
+badguy = Badguy(pos=(14*64, 6*64))
+
+all_ennemis = pygame.sprite.Group(badguy)
 all_sprites = pygame.sprite.Group(player)
+
+
 
 # --- Obstacles (Rectangles) ---
 
@@ -82,7 +96,7 @@ hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
 roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
 textures = {**nohitbox_tiles, **hitbox_tiles}
 
-
+pygame.event.set_grab(True)
 
 tile_size = 64
 
@@ -95,28 +109,30 @@ obstacles = game_map.get_obstacles()
 # --- Caméra ---
 map_width = len(map_data[0]) * tile_size
 map_height = len(map_data) * tile_size
-camera = Camera(map_width, map_height)
+camera = Camera(map_width, map_height, 800, 600)
 
 buildings = []
 b1_matrix = [
-    [0,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2],
-    [2,2,2,2,2,2,2] 
+    [0,1,1,1,1,1,2],
+    [10,11,11,11,11,11,12],
+    [10,11,11,11,11,11,12],
+    [10,11,11,11,11,11,12],
+    [10,11,11,11,11,11,12],
+    [10,11,11,11,11,11,12],
+    [20,21,21,21,21,21,22] 
 ]
 
 b1 = Building(b1_matrix,roofs_tiles, tile_size, pos_x=11, pos_y=9)
 buildings.append(b1)
 
 # Liste des positions des PNJs sur la matrice
-pnj_positions = [(6,3), (8,2), (10,5)]
+pnj_positions = [(12,10), (15,10), (6,6)]
 pnjs = []
-
+test=1
 for tile_pos in pnj_positions:
-    pnjs.append(PNJ("assets/south/1.png", tile_pos, tile_size=64))
+
+    pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, tile_size, str(test)))
+    test+=1
 
 #event manager
 events = EventManager(player)
@@ -130,13 +146,12 @@ cutscene_script = [
     MoveEvent(player, 0, -1, 100),
 ]
 
-
-
 # --- Boucle principale ---
 running = True
 while running:
     dt = clock.tick(60)
     keys = pygame.key.get_pressed()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -147,7 +162,11 @@ while running:
                 
                 events.start_event(cutscene_script.copy())
 
-    all_sprites.update(keys, obstacles, game_map) # Pass game_map
+        
+
+    all_sprites.update(keys, obstacles, game_map,all_ennemis) # Pass game_map
+    all_ennemis.update(keys, obstacles, game_map)
+    
     camera.update(player)
 
     # --- Rendu ---
@@ -160,23 +179,43 @@ while running:
     # dessiner joueur
     for sprite in all_sprites:
         screen.blit(sprite.image, camera.apply(sprite.rect))
-        pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
+        # pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
+    
+    for ennemie in all_ennemis:
+        print(ennemie.life)
+        screen.blit(ennemie.image,camera.apply(ennemie.rect))
+        pygame.draw.rect(screen, (0,255,0), camera.apply(ennemie.hitbox), 2)
 
    
-    print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
+    # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
     
 
     for pnj in pnjs:
-        pnj.update(player)
+        pnj.update(player,screen,camera,keys)
         screen.blit(pnj.image, camera.apply(pnj.rect))
-        pygame.draw.rect(screen, (0,255,0), camera.apply(pnj.rect), 2)
+       
 
     for b in buildings:
         b.draw(screen, camera, player.hitbox)
 
+    player.draw_crosshair(screen, camera)
+
     events.update(dt)
 
-    pygame.display.flip()
     
+
+    pygame.display.flip()
+        # --- Empêche la souris de sortir de la fenêtre ---
+    mx, my = pygame.mouse.get_pos()
+    sw, sh = screen.get_size()
+
+    # On bloque la position si elle dépasse les bords
+    if mx < 0: mx = 0
+    if mx > sw: mx = sw
+    if my < 0: my = 0
+    if my > sh: my = sh
+
+    pygame.mouse.set_pos((mx, my))
+
 
 pygame.quit()

@@ -24,11 +24,12 @@ class Building:
 
         for r,row in enumerate(self.matrix):
             for c,tile in enumerate(row):
+                if self.is_player_inside(player_rect):
+                    break
                 rect = pygame.Rect(self.x*64 + c*self.tile_size, self.y*64 + r*self.tile_size,
                                    self.tile_size, self.tile_size)
                 
-                if self.is_player_inside(player_rect):
-                    break
+                
                 img = self.textures[tile]
                 # if tile < 0:
                 #     self.obstacles.append((rect))

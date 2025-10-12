@@ -12,16 +12,17 @@ class MoveEvent:
         self.moved = 0
         self.done = False
         self.frame_timer = 0
+        self.direction = self.player.direction  # Initial direction
 
         # 🔹 Déterminer la direction du joueur (pour les frames)
         if dir_x > 0:
-            self.player.direction = "east"
+            self.direction = "E"
         elif dir_x < 0:
-            self.player.direction = "west"
+            self.direction = "W"
         elif dir_y > 0:
-            self.player.direction = "south"
+            self.direction = "S"
         elif dir_y < 0:
-            self.player.direction = "north"
+            self.direction = "N"
 
     def update(self,dt):
         if self.done:
@@ -36,20 +37,26 @@ class MoveEvent:
         self.player.hitbox.y += move_y
         self.moved += abs(move_x) + abs(move_y)
 
-        # 🔹 Gestion de l’animation
-        self.frame_timer += 1
-        if self.frame_timer % 8 == 0:  # changer toutes les 8 frames
-            self.player.frame_index += 1
-            if self.player.frame_index >= len(self.player.walk_frames):
-                self.player.frame_index = 0
-            self.player.image = self.player.walk_frames[int(self.player.frame_index)]
+        #  Gestion de l’animation
+        # self.frame_timer += 1
+        # if self.frame_timer % 8 == 0:  # changer toutes les 8 frames
+        #     self.player.frame_index += 1
+        #     if self.player.frame_index >= len(self.player.walk_frames):
+        #         self.player.frame_index = 0
+        #     self.player.image = self.player.walk_frames[int(self.player.frame_index)]
+
+        currents_frames = self.player.frames[self.direction][1:]
+        self.player.frame_index += self.player.animation_speed
+        if self.player.frame_index >= len(currents_frames):
+            self.player.frame_index = 0
+        self.player.image = currents_frames[int(self.player.frame_index)]
 
         # Si on a fini de bouger
         if self.moved >= self.distance:
             self.done = True
             # 🔹 remettre l’image idle à la fin
             self.player.frame_index = 0
-            self.player.image = self.player.idle_image
+            self.player.image = self.player.frames[self.direction][0]
             return True
 
         return False
