@@ -60,7 +60,7 @@ badguy = Badguy(pos=(14*64, 6*64))
 all_ennemis = pygame.sprite.Group(badguy)
 all_sprites = pygame.sprite.Group(player)
 
-
+pause = False
 
 # --- Obstacles (Rectangles) ---
 
@@ -148,6 +148,7 @@ cutscene_script = [
 
 # --- Boucle principale ---
 running = True
+
 while running:
     dt = clock.tick(60)
     keys = pygame.key.get_pressed()
@@ -161,6 +162,22 @@ while running:
             if not events.active:
                 
                 events.start_event(cutscene_script.copy())
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if pause:
+                pause = False
+                pygame.event.set_grab(True)
+                pygame.mouse.set_visible(False)
+            else:
+                pause = True
+                pygame.event.set_grab(False)
+                pygame.mouse.set_visible(True)
+        # and not pause:
+        #     pause = True
+        #     pygame.event.set_grab(False)
+        #     pygame.mouse.set_visible(True)
+        
+
 
         
 
@@ -182,7 +199,7 @@ while running:
         # pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
     
     for ennemie in all_ennemis:
-        print(ennemie.life)
+        
         screen.blit(ennemie.image,camera.apply(ennemie.rect))
         pygame.draw.rect(screen, (0,255,0), camera.apply(ennemie.hitbox), 2)
 
@@ -206,17 +223,18 @@ while running:
 
     pygame.display.flip()
     
-        # --- Empêche la souris de sortir de la fenêtre ---
-    mx, my = pygame.mouse.get_pos()
-    sw, sh = screen.get_size()
+    if not pause:
+            # --- Empêche la souris de sortir de la fenêtre ---
+        mx, my = pygame.mouse.get_pos()
+        sw, sh = screen.get_size()
 
-    # On bloque la position si elle dépasse les bords
-    if mx < 0: mx = 0
-    if mx > sw: mx = sw
-    if my < 0: my = 0
-    if my > sh: my = sh
+        # On bloque la position si elle dépasse les bords
+        if mx < 0: mx = 0
+        if mx > sw: mx = sw
+        if my < 0: my = 0
+        if my > sh: my = sh
 
-    pygame.mouse.set_pos((mx, my))
+        pygame.mouse.set_pos((mx, my))
 
 
 pygame.quit()
