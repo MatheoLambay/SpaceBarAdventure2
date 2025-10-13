@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.life = 10
         self.max_life = 10
         self.is_punching = 0
+        
   
 
     def draw_crosshair(self, surface, camera):

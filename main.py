@@ -9,6 +9,7 @@ from utility.eventManager import EventManager
 from utility.eventMove import MoveEvent
 from utility.eventWait import WaitEvent
 from classes.badguy import Badguy
+from classes.items import items
 
 # --- Fonction pour charger les frames d’un dossier ---
 def load_frames(folder_path):
@@ -80,6 +81,8 @@ badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badgu
 
 
 player = Player(frames,frames_fight, pos=(14*64, 4*64))
+
+
 badguy = Badguy(badguy_frames,badguy_fight_frames,pos=(14*64, 6*64))
 badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*64, 10*64))
 all_ennemis = pygame.sprite.Group()
@@ -87,7 +90,15 @@ all_ennemis = pygame.sprite.Group()
 
 all_sprites = pygame.sprite.Group(player)
 
+#--- items et inventaire
+
+money = items("argent")
+inventory = pygame.sprite.Group()
+
+
+
 pause = False
+
 
 # --- Obstacles (Rectangles) ---
 
@@ -154,7 +165,7 @@ b1 = Building(b1_matrix,roofs_tiles, tile_size, pos_x=11, pos_y=9)
 buildings.append(b1)
 
 # Liste des positions des PNJs sur la matrice
-pnj_positions = [(12,10), (15,10), (6,6)]
+pnj_positions = [(6,6)]
 pnjs = []
 test=1
 for tile_pos in pnj_positions:
@@ -192,8 +203,9 @@ while running:
         # touche espace pour lancer la cutscene
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             if not events.active:
+                inventory.add(money)
                 
-                events.start_event(cutscene_script.copy())
+                # events.start_event(cutscene_script.copy())
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             if pause:
@@ -234,7 +246,7 @@ while running:
     
 
     for pnj in pnjs:
-        pnj.update(player,screen,camera,keys,first_plan_event)
+        pnj.update(player,screen,camera,keys,inventory)
         screen.blit(pnj.image, camera.apply(pnj.rect))
        
 
