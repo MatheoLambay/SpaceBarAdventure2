@@ -1,5 +1,6 @@
 import pygame
 import os
+import json
 from classes.player import Player
 from classes.camera import Camera
 from classes.map import Map
@@ -11,6 +12,7 @@ from utility.eventWait import WaitEvent
 from classes.badguy import Badguy
 from classes.items import items
 from utility.eventTile import eventTile
+
 
 
 def load_frames(folder_path):
@@ -41,36 +43,19 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
 
     return tiles
 
+def read_data(link):
+    with open(link,"r") as r:
+        return json.load(r)
+
 class game_manager:
     def __init__(self,screen):
         self.screen = screen
         self.tile_size = 64
-        self.map_data = [
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,-4,-4,-4,-4,-4,-4,-4,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3,-4,-4, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3,-4,-4,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3,-4,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4,-4, 3, 3, 3, 3, 3, 3],
-            [3, 3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-12,-13,-13,-13,-13,-13,-14, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-22, 2, 1, 1, 1, 1,-24, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-22, 1, 1, 1, 1, 1,-24, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-22, 1, 1, 1, 1, 1,-24, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-22, 1, 1, 1, 1, 1,-24, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-22, 1, 1, 1, 1, 1,-24, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-32,-33,-33,1,-33,-33,-34, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3],
-            [3, 3,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3,-4,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4,-4,-4, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3,-4,-4,-4,-4,-4,-4,-4,-4, 0, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,-4, 0, 0, 0, 0, 0, 0, 0, 0,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,-4,-4,-4,-4,-4,-4,-4,-4,-4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-            [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
 
-        ]
+        data = read_data("projectS\data\map1.json")
+
+        self.map_data = data["map_data"]
+
         nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
         hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
         roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
@@ -101,12 +86,19 @@ class game_manager:
         badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
         badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
         badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
-        badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*self.tile_size, 10*self.tile_size))
+        
         self.all_ennemis = pygame.sprite.Group()
-        self.all_ennemis.add(badguy2)
+        ennemis_position = data["ennemis"]
+
+        for e in ennemis_position:
+            self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,pos=(e[0]*self.tile_size, e[1]*self.tile_size)))
+        
+        # badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*self.tile_size, 10*self.tile_size))
+        
+        # self.all_ennemis.add(badguy2)
 
 
-        pnj_positions = [(6,6)]
+        pnj_positions = data["pnjs"]
         self.pnjs = []
         test=1
         for tile_pos in pnj_positions:
@@ -114,18 +106,28 @@ class game_manager:
             test+=1
 
         self.buildings = []
-        b1_matrix = [
-            [0,1,1,1,1,1,2],
-            [10,11,11,11,11,11,12],
-            [10,11,11,11,11,11,12],
-            [10,11,11,11,11,11,12],
-            [10,11,11,11,11,11,12,12],
-            [10,11,11,11,11,11,12],
-            [20,21,21,21,21,21,22] 
-        ]
 
-        b1 = Building(b1_matrix,roofs_tiles, self.tile_size, pos_x=11, pos_y=9)
-        self.buildings.append(b1)
+        self.roofs = data["building"]
+
+
+
+        for roof in self.roofs:
+            
+            print(roof[1][0][0])
+            self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0][0], pos_y=roof[1][0][1]))
+        
+        # b1_matrix = [
+        #     [0,1,1,1,1,1,2],
+        #     [10,11,11,11,11,11,12],
+        #     [10,11,11,11,11,11,12],
+        #     [10,11,11,11,11,11,12],
+        #     [10,11,11,11,11,11,12],
+        #     [10,11,11,11,11,11,12],
+        #     [20,21,21,21,21,21,22] 
+        # ]
+
+        # b1 = Building(b1_matrix,roofs_tiles, self.tile_size, pos_x=11, pos_y=9)
+        # self.buildings.append(b1)
         
         self.game_map = Map(self.map_data, self.tile_size,textures)
 
