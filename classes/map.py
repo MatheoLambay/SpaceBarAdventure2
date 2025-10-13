@@ -31,6 +31,11 @@ class Map:
             -34:((self.tile_size,10,0,self.tile_size-10),(10,self.tile_size,self.tile_size-10,0))
         }  
 
+        self.set_obstacles()
+
+ 
+    def set_obstacles(self):
+        self.obstacles = []
         for row_idx, row in enumerate(self.map_data):
             for col_idx, tile in enumerate(row):
                 x = col_idx * self.tile_size
@@ -43,11 +48,16 @@ class Map:
                     else:
                         self.obstacles.append(pygame.Rect(x, y, self.tile_size, self.tile_size))
                         self.obstacles_coords.append((x, y, self.tile_size, self.tile_size))
+        
 
+    def new_map_data(self,new_map):
+        self.map_data = new_map
+        self.set_obstacles()
+    
        
     def get_obstacles(self):
         """Retourne la liste des obstacles pour collisions"""
-        return self.obstacles, self.obstacles_coords
+        return self.obstacles
 
     def draw(self, surface, camera):
         """Dessine la map sur l'écran avec la caméra"""
@@ -56,11 +66,7 @@ class Map:
                 x = col_idx * self.tile_size
                 y = row_idx * self.tile_size
 
-                # if tile == -1:
-                #     rect = pygame.Rect(x, y, 9, self.tile_size)
-                # if tile == -4:
-                #     rect = pygame.Rect(x, y, self.tile_size, self.tile_size//2)
-                # else:
+        
                 rect = pygame.Rect(x, y, self.tile_size, self.tile_size)
                 
                 img = self.textures[tile]

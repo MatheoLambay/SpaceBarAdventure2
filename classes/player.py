@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-30, -20)  # hitbox plus petite que le sprite
         self.animation_speed = 0.15
-        self.current_tile = None 
+        # self.current_tile = None 
         self.control_enabled = True 
         self.show_crosshair = True
         self.crosshair_image = pygame.image.load("assets/player/crossair.png").convert_alpha()
@@ -52,6 +52,10 @@ class Player(pygame.sprite.Sprite):
             y = camera.apply(self.rect).topleft[1]
             pygame.draw.rect(screen,"red",(x,y,64,5))
             pygame.draw.rect(screen,"green",(x,y,64*ratio,5))
+
+    def get_tile(self,game_map):
+        return game_map.get_tile(self.hitbox.center)
+
 
 
     def update(self, keys, obstacles, game_map,ennemis): # Add game_map as argument
@@ -133,7 +137,6 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = self.hitbox.top - (self.rect.height - self.hitbox.height) / 2
 
         # --- Tile Detection ---
-        self.current_tile = game_map.get_tile(self.hitbox.center)
 
         # --- Mouse Click Detection ---
         
