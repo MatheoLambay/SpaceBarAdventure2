@@ -53,7 +53,12 @@ class game_manager:
         self.tile_size = 64
 
         data = read_data("projectS\data\map1.json")
+        self.load_game(data)
 
+        
+
+
+    def load_game(self,data):
         self.map_data = data["map_data"]
 
         nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
@@ -89,15 +94,10 @@ class game_manager:
         
         self.all_ennemis = pygame.sprite.Group()
         ennemis_position = data["ennemis"]
-
         for e in ennemis_position:
             self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,pos=(e[0]*self.tile_size, e[1]*self.tile_size)))
         
-        # badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*self.tile_size, 10*self.tile_size))
-        
-        # self.all_ennemis.add(badguy2)
-
-
+    
         pnj_positions = data["pnjs"]
         self.pnjs = []
         test=1
@@ -106,42 +106,29 @@ class game_manager:
             test+=1
 
         self.buildings = []
-
         self.roofs = data["building"]
-
-
-
         for roof in self.roofs:
-            
             print(roof[1][0][0])
             self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0][0], pos_y=roof[1][0][1]))
         
-        # b1_matrix = [
-        #     [0,1,1,1,1,1,2],
-        #     [10,11,11,11,11,11,12],
-        #     [10,11,11,11,11,11,12],
-        #     [10,11,11,11,11,11,12],
-        #     [10,11,11,11,11,11,12],
-        #     [10,11,11,11,11,11,12],
-        #     [20,21,21,21,21,21,22] 
-        # ]
-
-        # b1 = Building(b1_matrix,roofs_tiles, self.tile_size, pos_x=11, pos_y=9)
-        # self.buildings.append(b1)
         
         self.game_map = Map(self.map_data, self.tile_size,textures)
 
         # ev = eventTile(2,new_map)
         # event_tiles = pygame.sprite.Group(ev)
-
         self.map_width = len(self.map_data[0]) * self.tile_size
         self.map_height = len(self.map_data) * self.tile_size
+
         self.camera = Camera(self.map_width, self.map_height, 800, 600)
 
     def open(self,screen):
         pass
 
     def update(self,keys,screen,dt):
+
+        if keys[pygame.K_b]:
+            data = read_data("projectS\data\map2.json")
+            self.load_game(data)
         
         obstacles = self.game_map.get_obstacles()
     

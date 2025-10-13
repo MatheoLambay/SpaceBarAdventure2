@@ -4,9 +4,6 @@ from utility.menu_manager import menuManager
 from classes.menus.main_menu import mainMenu
 
 
-
-
-
 pygame.init()
 # pygame.mouse.set_visible(False) 
 # pygame.event.set_grab(True)

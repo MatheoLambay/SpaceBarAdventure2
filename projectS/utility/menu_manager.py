@@ -4,6 +4,7 @@ class menuManager:
     def __init__(self):
         self.current_menu = []
         self.screen = pygame.display.set_mode((800,600))
+        
 
     def push_menu(self, menu):
         """Ajouter un nouveau menu au fil d'Ariane."""
