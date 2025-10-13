@@ -101,7 +101,7 @@ class game_manager:
         badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
         badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
         badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
-        badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*64, 10*64))
+        badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*self.tile_size, 10*self.tile_size))
         self.all_ennemis = pygame.sprite.Group()
         self.all_ennemis.add(badguy2)
 
@@ -119,7 +119,7 @@ class game_manager:
             [10,11,11,11,11,11,12],
             [10,11,11,11,11,11,12],
             [10,11,11,11,11,11,12],
-            [10,11,11,11,11,11,12],
+            [10,11,11,11,11,11,12,12],
             [10,11,11,11,11,11,12],
             [20,21,21,21,21,21,22] 
         ]
