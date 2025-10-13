@@ -97,9 +97,7 @@ class Player(pygame.sprite.Sprite):
             if self.frame_fight_index >= len(currents_frames):
                 self.frame_fight_index = 0
                 self.is_punching = 0
-                for ennemi in ennemis:
-                    if self.crosshair_hitbox.colliderect(ennemi.hitbox):
-                        ennemi.life -= 1
+                
             self.image = currents_frames[int(self.frame_fight_index)]
 
         else:
@@ -150,7 +148,10 @@ class Player(pygame.sprite.Sprite):
                 self.direction = "N"
             else:
                 self.direction = "S"
-
+                
+            for ennemi in ennemis:
+                if self.crosshair_hitbox.colliderect(ennemi.hitbox):
+                    ennemi.life -= 1
             
             self.last_click_state = 1
             

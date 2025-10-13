@@ -33,6 +33,7 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
             tiles[id_counter] = tile
             if positive_ids_only:
                 id_counter += 1
+                
             else:
                 id_counter -= 1
 
@@ -43,6 +44,8 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
 pygame.init()
 pygame.mouse.set_visible(False) 
 pygame.event.set_grab(True)
+pygame.font.init()
+
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Jeu avec collisions et scrolling")
 clock = pygame.time.Clock()
@@ -79,8 +82,8 @@ badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badgu
 player = Player(frames,frames_fight, pos=(14*64, 4*64))
 badguy = Badguy(badguy_frames,badguy_fight_frames,pos=(14*64, 6*64))
 badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*64, 10*64))
-all_ennemis = pygame.sprite.Group(badguy)
-all_ennemis.add(badguy2)
+all_ennemis = pygame.sprite.Group()
+# all_ennemis.add(badguy2)
 
 all_sprites = pygame.sprite.Group(player)
 
@@ -135,6 +138,7 @@ map_width = len(map_data[0]) * tile_size
 map_height = len(map_data) * tile_size
 camera = Camera(map_width, map_height, 800, 600)
 
+# --- building
 buildings = []
 b1_matrix = [
     [0,1,1,1,1,1,2],
@@ -169,6 +173,10 @@ cutscene_script = [
     WaitEvent(3000), 
     MoveEvent(player, 0, -1, 100),
 ]
+
+#---first plan event
+first_plan_event = []
+
 
 # --- Boucle principale ---
 running = True
@@ -226,12 +234,15 @@ while running:
     
 
     for pnj in pnjs:
-        pnj.update(player,screen,camera,keys)
+        pnj.update(player,screen,camera,keys,first_plan_event)
         screen.blit(pnj.image, camera.apply(pnj.rect))
        
 
     for b in buildings:
         b.draw(screen, camera, player.hitbox)
+
+    for e in first_plan_event:
+        screen.blit(e[0],e[1])
 
     player.draw_crosshair(screen, camera)
     player.draw_life(screen, camera)
