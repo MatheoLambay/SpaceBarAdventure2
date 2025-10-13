@@ -2,10 +2,12 @@ import pygame
 import math
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, frames, pos):
+    def __init__(self, frames,frames_fight, pos):
         super().__init__()
         self.frames = frames
         self.frame_index = 0
+        self.frames_fight = frames_fight
+        self.frame_fight_index = 0
         self.direction = "S"
         self.image = self.frames[self.direction][0]  # Default to south idle frame
         self.rect = self.image.get_rect(center=pos)
@@ -19,6 +21,10 @@ class Player(pygame.sprite.Sprite):
         self.crosshair_hitbox = self.rect_crosshair.inflate(-20, -20) 
         self.crosshair_radius = 50
         self.last_click_state = 0
+        self.life = 10
+        self.max_life = 10
+        self.is_punching = 0
+  
 
     def draw_crosshair(self, surface, camera):
         mx, my = pygame.mouse.get_pos()
@@ -38,40 +44,70 @@ class Player(pygame.sprite.Sprite):
         #pygame.draw.rect(surface, (255, 0, 0), camera.apply(self.crosshair_hitbox), 1)
         surface.blit(self.crosshair_image, camera.apply(self.rect_crosshair))
         
+    def draw_life(self,screen,camera):
+        if self.life < self.max_life:
+            ratio = self.life / self.max_life
+            x = camera.apply(self.rect).topleft[0]
+            y = camera.apply(self.rect).topleft[1]
+            pygame.draw.rect(screen,"red",(x,y,64,5))
+            pygame.draw.rect(screen,"green",(x,y,64*ratio,5))
+
 
     def update(self, keys, obstacles, game_map,ennemis): # Add game_map as argument
         if not self.control_enabled:
             return
+        
+        if self.life < 1:
+            print("DEAD")
+        
+       
+
 
         dx, dy = 0, 0
 
         # --- Déplacements ---
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_z]:
             dy = -4
             self.direction = "N"
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             dy = 4
             self.direction = "S"
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_q]:
             dx = -4
             self.direction = "W"
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             dx = 4
             self.direction = "E"
 
         moving = dx != 0 or dy != 0
 
         # --- Animation ---
-        if moving:
+        if moving and self.is_punching == 0:
             currents_frames = self.frames[self.direction][1:]
             self.frame_index += self.animation_speed
+           
             if self.frame_index >= len(currents_frames):
                 self.frame_index = 0
             self.image = currents_frames[int(self.frame_index)]
+
+        elif self.is_punching == 1:
+            currents_frames = self.frames_fight[self.direction]
+            self.frame_fight_index += self.animation_speed
+           
+            if self.frame_fight_index >= len(currents_frames):
+                self.frame_fight_index = 0
+                self.is_punching = 0
+                for ennemi in ennemis:
+                    if self.crosshair_hitbox.colliderect(ennemi.hitbox):
+                        ennemi.life -= 1
+            self.image = currents_frames[int(self.frame_fight_index)]
+
         else:
             self.frame_index = 0
-            
+            self.frame_fight_index = 0
             self.image = self.frames[self.direction][0]
+        
+       
 
         # --- Collision X ---
         self.rect.x += dx
@@ -102,12 +138,24 @@ class Player(pygame.sprite.Sprite):
 
         # --- Mouse Click Detection ---
         
-        if pygame.mouse.get_pressed()[0] and self.last_click_state == 0:
-            for ennemi in ennemis:
-                if self.crosshair_hitbox.colliderect(ennemi.hitbox):
-                    ennemi.life -= 1
+        if pygame.mouse.get_pressed()[0] and self.last_click_state == 0 and self.is_punching == 0:
+            self.is_punching = 1
+            print("ici")
+            
+            if self.rect_crosshair.centerx < self.rect.centerx:
+                self.direction = "W"
+            elif self.rect_crosshair.centerx > self.rect.centerx:
+                self.direction = "E"
+            elif self.rect_crosshair.centery < self.rect.centery:
+                self.direction = "N"
+            else:
+                self.direction = "S"
+
+            
             self.last_click_state = 1
-        elif not pygame.mouse.get_pressed()[0] and self.last_click_state == 1:
+            
+
+        elif not pygame.mouse.get_pressed()[0] and self.last_click_state == 1 and self.is_punching == 0:
             self.last_click_state = 0
 
-       
+ 

@@ -54,10 +54,34 @@ frames_east = load_frames("assets/player/animations/walk-1/east")
 frames_west = load_frames("assets/player/animations/walk-1/west")
 frames = {"S":frames_south, "N":frames_north, "E":frames_east, "W":frames_west}
 
-player = Player(frames, pos=(14*64, 4*64))
-badguy = Badguy(pos=(14*64, 6*64))
+frames_fight_south = load_frames("assets/player/animations/cross-punch/south")
+frames_fight_north = load_frames("assets/player/animations/cross-punch/north")
+frames_fight_east = load_frames("assets/player/animations/cross-punch/east")
+frames_fight_west = load_frames("assets/player/animations/cross-punch/west")
+frames_fight = {"S":frames_fight_south, "N":frames_fight_north, "E":frames_fight_east, "W":frames_fight_west}
 
+badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
+badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
+badguy_east = load_frames("assets/pnj/ennemis/scary-walk/east")
+badguy_west = load_frames("assets/pnj/ennemis/scary-walk/west")
+badguy_frames = {"S":badguy_south, "N":badguy_north, "E":badguy_east, "W":badguy_west}
+
+badguy_fight_south = load_frames("assets\pnj\ennemis\cross-punch\south")
+badguy_fight_north = load_frames("assets/pnj/ennemis/cross-punch/north")
+badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
+badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
+
+badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
+
+
+
+
+player = Player(frames,frames_fight, pos=(14*64, 4*64))
+badguy = Badguy(badguy_frames,badguy_fight_frames,pos=(14*64, 6*64))
+badguy2 = Badguy(badguy_frames,badguy_fight_frames,pos=(15*64, 10*64))
 all_ennemis = pygame.sprite.Group(badguy)
+all_ennemis.add(badguy2)
+
 all_sprites = pygame.sprite.Group(player)
 
 pause = False
@@ -172,19 +196,12 @@ while running:
                 pause = True
                 pygame.event.set_grab(False)
                 pygame.mouse.set_visible(True)
-        # and not pause:
-        #     pause = True
-        #     pygame.event.set_grab(False)
-        #     pygame.mouse.set_visible(True)
-        
-
-
-        
+    
 
     all_sprites.update(keys, obstacles, game_map,all_ennemis) # Pass game_map
 
     
-    all_ennemis.update(player.rect, obstacles,map_width,map_height,tile_size)
+    all_ennemis.update(player, obstacles,map_width,map_height,tile_size)
     
     camera.update(player)
 
@@ -203,9 +220,8 @@ while running:
     for ennemie in all_ennemis:
         # ennemie.update(keys, obstacles, game_map,player)
         screen.blit(ennemie.image,camera.apply(ennemie.rect))
-        pygame.draw.rect(screen, (0,255,0), camera.apply(ennemie.hitbox), 2)
-
-   
+        pygame.draw.rect(screen,'red',camera.apply(ennemie.hitbox),1)
+       
     # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
     
 
@@ -218,6 +234,8 @@ while running:
         b.draw(screen, camera, player.hitbox)
 
     player.draw_crosshair(screen, camera)
+    player.draw_life(screen, camera)
+    # pygame.draw.rect(screen,'green',camera.apply(player.hitbox),1)
 
     events.update(dt)
 

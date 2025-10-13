@@ -2,10 +2,18 @@ import pygame
 from utility.Apathfinding import astar  # your A* function
 
 class Badguy(pygame.sprite.Sprite):
-    def __init__(self, pos, speed=2, margin=4, path_update_interval=12):
+    def __init__(self, frames_walk,frame_fight ,pos, speed=2, margin=4, path_update_interval=12):
         super().__init__()
-        self.image = pygame.image.load("assets/pnj/ennemis/south.png").convert_alpha()
+        self.frames_walk = frames_walk
+        self.frame_walk_index = 0
+        self.frames_fight = frame_fight
+        self.frames_fight_index = 0
+        self.direction = "S"
+        self.image = self.frames_walk[self.direction][0]  # Default to south idle frame
         self.rect = self.image.get_rect(center=pos)
+        self.animation_speed = 0.15
+        # self.image = pygame.image.load("assets/pnj/ennemis/south.png").convert_alpha()
+        # self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-30, -20)  # for collisions
         self.life = 3
         self.speed = speed
@@ -28,28 +36,45 @@ class Badguy(pygame.sprite.Sprite):
     # Convert tile to top-left position
     def pos_from_tile(self, tile, tile_size):
         return tile[0] * tile_size, tile[1] * tile_size
+    
+    def attack(self,cible):
+        cible.life -=1
 
-    def update(self, player_rect, obstacles, map_w, map_h, tile_size):
+    def update(self, player, obstacles, map_w, map_h, tile_size):
         if self.life <= 0:
             self.kill()
             return
+    
+        if self.hitbox.colliderect(player.hitbox):
+            currents_frames = self.frames_fight[self.direction][1:]
+            self.frames_fight_index += self.animation_speed
+            if self.frames_fight_index >= len(currents_frames):
+                self.frames_fight_index = 0
+                self.attack(player)
+            self.image = currents_frames[int(self.frames_fight_index)]
+        else:
+            # --- Update path periodically ---
+            self.path_timer += 1
+            if self.path_timer >= self.path_update_interval:
+                self.path_timer = 0
+                self._update_path(player.rect, obstacles, map_w, map_h, tile_size)
 
-        # --- Update path periodically ---
-        self.path_timer += 1
-        if self.path_timer >= self.path_update_interval:
-            self.path_timer = 0
-            self._update_path(player_rect, obstacles, map_w, map_h, tile_size)
+            # --- Follow path ---
+            self._follow_path(obstacles, tile_size)
 
-        # --- Follow path ---
-        self._follow_path(obstacles, tile_size)
+            # --- Update hitbox & rect to match float position ---
+            self.hitbox.center = (int(self.pos.x), int(self.pos.y))
+            self.rect.center = (int(self.pos.x), int(self.pos.y))
 
-        # --- Update hitbox & rect to match float position ---
-        self.hitbox.center = (int(self.pos.x), int(self.pos.y))
-        self.rect.center = (int(self.pos.x), int(self.pos.y))
+            currents_frames = self.frames_walk[self.direction][1:]
+            self.frame_walk_index += self.animation_speed
+            if self.frame_walk_index >= len(currents_frames):
+                self.frame_walk_index = 0
+            self.image = currents_frames[int(self.frame_walk_index)]
 
     # Internal path update
-    def _update_path(self, player_rect, obstacles, map_w, map_h, tile_size):
-        player_tile = self.tile_from_pos(player_rect.center, tile_size)
+    def _update_path(self, player, obstacles, map_w, map_h, tile_size):
+        player_tile = self.tile_from_pos(player.center, tile_size)
         enemy_tile = self.tile_from_pos(self.pos, tile_size)
 
         # Ensure target tile is free
@@ -85,6 +110,10 @@ class Badguy(pygame.sprite.Sprite):
         target_tile = self.path[self.target_index]
         target_center = pygame.Vector2(self.pos_from_tile(target_tile, tile_size)) + pygame.Vector2(tile_size/2, tile_size/2)
         vec = target_center - self.pos
+        if abs(vec.x) > abs(vec.y):
+            self.direction = "E" if vec.x > 0 else "W"
+        else:
+            self.direction = "S" if vec.y > 0 else "N"
 
         # Snap if close
         if vec.length() < 1.5:
