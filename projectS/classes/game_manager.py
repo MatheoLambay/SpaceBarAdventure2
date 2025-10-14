@@ -70,13 +70,18 @@ class game_manager:
 
         x,y = data["player_coord"]
         self.player = Player(frames,frames_fight, pos=(x*self.tile_size, y*self.tile_size))
-        self.inventory = pygame.sprite.Group()
+        self.inventory = []
         self.all_sprites = pygame.sprite.Group(self.player)
         
         self.load_game(data)
-        
-        self.test = [eventChangeTile(-4, 1, data["map_data"])]
+        #eventChangeTile(-4, 1, data["map_data"])
+        self.test = []
 
+        
+
+        
+
+        # self.event_tiles = pygame.sprite.Group(ev)
 
         self.great_pnj = pygame.sprite.Group(Bartender((10,7)))
 
@@ -154,8 +159,7 @@ class game_manager:
     def update(self,keys,screen,dt):
 
         if keys[pygame.K_b]:
-            new = self.test[-1].switch_tile()
-            self.game_map.new_map_data(new)
+            self.inventory.append("caca")
             
             
         
@@ -201,11 +205,17 @@ class game_manager:
                 data = read_data(event)
                 
                 self.load_game(data)
+
+        for t in range(len(self.test)):
+            new = self.test[t].switch_tile()
+            self.game_map.new_map_data(new)
+            self.test.pop(t)
                
-        self.great_pnj.update(self.player,keys,self.screen,self.camera)
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.test,self.game_map.get_map_data())
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
+        # self.event_tiles.update(self.game_map.get_tile(self.player.hitbox.center),self.game_map)
 
         self.player.draw_crosshair(self.screen, self.camera)
         self.player.draw_life(self.screen, self.camera)

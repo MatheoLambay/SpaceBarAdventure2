@@ -1,4 +1,5 @@
 import pygame
+from utility.eventChangeTile import eventChangeTile
 
 class Bartender(pygame.sprite.Sprite):
     def __init__(self,pos):
@@ -23,11 +24,18 @@ class Bartender(pygame.sprite.Sprite):
 
         self.index = 0
 
-        self.dialogues = {1:{"text":"salut","objectif":"caca","unlock":["door",3]}}
+        self.step = 1
+        self.dialogues = {
+                1:{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",-4,1]},
+                2:{"text":["tu as le caca ?"],"objectif":"caca","unlock":"None"},
+                3:{"text":["tu as checker la porte ?"],"objectif":"None","unlock":"None"}     
+                          
+        }
 
 
-    def update(self,player,keys,screen,camera):
-        if self.index == 0 and len(self.text) > 0:
+    def update(self,player,keys,screen,camera,inventory,event_tile,map):
+       
+        if self.index == 0 and len(self.dialogues[self.step]['text']) > 0:
             if self.rect.colliderect(player.hitbox):
                 interaction_rect = self.interaction_img.get_rect(topright=self.rect.topright)
                 screen.blit(self.interaction_img, camera.apply(interaction_rect))
@@ -40,7 +48,45 @@ class Bartender(pygame.sprite.Sprite):
                     self.last_talk = 0
 
         
-        elif self.index == len(self.text):
+        elif self.index == len(self.dialogues[self.step]['text']):
+
+            if self.dialogues[self.step]["objectif"] != "None" and self.dialogues[self.step]["unlock"] != "None":
+
+                if self.dialogues[self.step]["objectif"] != "None":
+                    for i in inventory:
+                        if i == self.dialogues[self.step]["objectif"]:  
+                            
+                            if self.dialogues[self.step]["unlock"][0] == "door":
+                                tile1 = self.dialogues[self.step]["unlock"][1]
+                                tile2 = self.dialogues[self.step]["unlock"][2]
+
+                                event_tile.append(eventChangeTile(tile1,tile2,map))
+                            self.step +=1
+
+            elif self.dialogues[self.step]["unlock"] != "None":
+                
+                print(self.dialogues[self.step]["unlock"])
+                if self.dialogues[self.step]["unlock"][0] == "door":
+
+                    tile1 = self.dialogues[self.step]["unlock"][1]
+                    tile2 = self.dialogues[self.step]["unlock"][2]
+                    print("caca")
+                    event_tile.append(eventChangeTile(tile1,tile2,map))
+                self.step +=1
+
+            elif self.dialogues[self.step]["objectif"] != "None":
+                if self.dialogues[self.step]["objectif"] != "None":
+                    for i in inventory:
+                        if i == self.dialogues[self.step]["objectif"]:  
+                            self.step +=1
+
+            
+                
+                    
+        
+            
+
+       
             self.in_talk = 0
             
             player.control_enabled = True
@@ -61,17 +107,17 @@ class Bartender(pygame.sprite.Sprite):
             # --- display letter one by one
             current_time = pygame.time.get_ticks()
             if current_time - self.last_frame_time >= self.frame_interval:
-                if self.talk_index != len(self.text[self.text_index]):
-                    self.current_displayed_text += self.text[self.text_index][self.talk_index]
+                if self.talk_index != len(self.dialogues[self.step]['text'][self.text_index]):
+                    self.current_displayed_text += self.dialogues[self.step]['text'][self.text_index][self.talk_index]
                     self.talk_index+=1
                 
                 self.last_frame_time = current_time
 
             # --- skip animation
             if keys[pygame.K_RETURN] and self.last_talk == 0:
-                if self.talk_index != len(self.text[self.text_index]):
-                    self.current_displayed_text = self.text[self.text_index]
-                    self.talk_index = len(self.text[self.text_index])
+                if self.talk_index != len(self.dialogues[self.step]['text'][self.text_index]):
+                    self.current_displayed_text = self.dialogues[self.step]['text'][self.text_index]
+                    self.talk_index = len(self.dialogues[self.step]['text'][self.text_index])
                 else: # ---
                     self.index += 1
                     
