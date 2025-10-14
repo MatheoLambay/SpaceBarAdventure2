@@ -83,7 +83,7 @@ class game_manager:
 
         # self.event_tiles = pygame.sprite.Group(ev)
 
-        self.great_pnj = pygame.sprite.Group(Bartender((10,7)))
+        self.great_pnj = pygame.sprite.Group(Bartender((10,9)))
 
 
 
@@ -129,8 +129,9 @@ class game_manager:
         self.buildings = []
         self.roofs = data["building"]
         for roof in self.roofs:
-            print(roof[1][0][0])
-            self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0][0], pos_y=roof[1][0][1]))
+            print(roof)
+            
+            self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0], pos_y=roof[1][1]))
         
         
         self.game_map = Map(self.map_data, self.tile_size,textures)

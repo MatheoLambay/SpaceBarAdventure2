@@ -29,11 +29,11 @@ class Building:
                 rect = pygame.Rect(self.x*64 + c*self.tile_size, self.y*64 + r*self.tile_size,
                                    self.tile_size, self.tile_size)
                 
-                
-                img = self.textures[tile]
-                # if tile < 0:
-                #     self.obstacles.append((rect))
-                surface.blit(img, camera.apply(rect))
+                if tile > -1:
+                    img = self.textures[tile]
+                    # if tile < 0:
+                    #     self.obstacles.append((rect))
+                    surface.blit(img, camera.apply(rect))
                 # if tile==1:
                 #     color=(150,0,0)
                 # elif tile==2:

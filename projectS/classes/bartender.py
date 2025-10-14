@@ -26,7 +26,7 @@ class Bartender(pygame.sprite.Sprite):
 
         self.step = 1
         self.dialogues = {
-                1:{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",-4,1]},
+                1:{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",[-4,-3],1]},
                 2:{"text":["tu as le caca ?"],"objectif":"caca","unlock":"None"},
                 3:{"text":["tu as checker la porte ?"],"objectif":"None","unlock":"None"}     
                           

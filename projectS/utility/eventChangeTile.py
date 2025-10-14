@@ -13,7 +13,7 @@ class eventChangeTile:
         for x in range(len(self.map)):
             for y in range(len(self.map[x])):
                 
-                if self.map[x][y] == self.tile:
+                if self.map[x][y] in self.tile:
                     self.map[x][y] = self.new_tile
       
         return self.map
