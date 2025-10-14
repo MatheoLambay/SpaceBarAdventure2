@@ -12,6 +12,8 @@ from utility.eventWait import WaitEvent
 from classes.badguy import Badguy
 from classes.items import items
 from utility.eventTile import eventTile
+from utility.eventChangeTile import eventChangeTile
+from classes.bartender import Bartender
 
 
 
@@ -73,18 +75,23 @@ class game_manager:
         
         self.load_game(data)
         
+        self.test = [eventChangeTile(-4, 1, data["map_data"])]
+
+
+        self.great_pnj = pygame.sprite.Group(Bartender((10,7)))
+
 
 
     def load_game(self,data):
         self.map_data = data["map_data"]
 
-        nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
-        hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
+        nohitbox_tiles = load_tileset_as_dict("assets/map/tilesetSpace.png", 64)
+        hitbox_tiles = load_tileset_as_dict("assets/map/tilesetSpaceHitbox.png", 64,False)
         roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
         textures = {**nohitbox_tiles, **hitbox_tiles}
         x,y = data["player_coord"]
 
-        self.player.set_position((x*self.tile_size,y*self.tile_size))
+        self.player.set_position((x*self.tile_size-self.tile_size//2,y*self.tile_size-self.tile_size//2))
 
         badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
         badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
@@ -106,7 +113,6 @@ class game_manager:
         pnj_data= data["pnjs"]
         self.pnjs = pygame.sprite.Group()
         for p in pnj_data:
-            print(p)
             self.pnjs.add(PNJ("assets/player/animations/walk-1/south/frame_000.png", p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames))
             
             
@@ -137,7 +143,9 @@ class game_manager:
 
         self.obstacles = self.game_map.get_obstacles()
             
-
+    def load_map(self,new_map):
+        self.game = new_map
+        self.obstacles = self.game_map.get_obstacles()
 
 
     def open(self,screen):
@@ -145,7 +153,10 @@ class game_manager:
 
     def update(self,keys,screen,dt):
 
-       
+        if keys[pygame.K_b]:
+            new = self.test[-1].switch_tile()
+            self.game_map.new_map_data(new)
+            
             
         
         obstacles = self.game_map.get_obstacles()
@@ -191,8 +202,9 @@ class game_manager:
                 
                 self.load_game(data)
                
-
-        
+        self.great_pnj.update(self.player,keys,self.screen,self.camera)
+        for g in self.great_pnj:
+            self.screen.blit(g.image,self.camera.apply(g.rect))
 
 
         self.player.draw_crosshair(self.screen, self.camera)
