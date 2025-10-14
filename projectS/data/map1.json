@@ -42,5 +42,26 @@
                 13,15
             ]
         ]
+    ],
+    "greatpnj":[
+        [
+
+            {
+                "1":{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",[-4,-3],1]},
+                "2":{"text":["tu as le caca ?"],"objectif":"caca","unlock":"None"},
+                "3":{"text":["tu as checker la porte ?"],"objectif":"None","unlock":"None"}   
+            },
+            [10,9]
+    
+        ],
+         [
+
+            {
+                "1":{"text":["salut"],"objectif":"None","unlock":["door",[-4,-3],1]}   
+            },
+            [17,9]
+    
+        ]
     ]
+                
 }

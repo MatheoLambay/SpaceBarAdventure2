@@ -2,7 +2,7 @@ import pygame
 from utility.eventChangeTile import eventChangeTile
 
 class Bartender(pygame.sprite.Sprite):
-    def __init__(self,pos):
+    def __init__(self,pos,dialogues):
         super().__init__()
         self.image = pygame.image.load("assets\pnj\south.png").convert_alpha()
         x,y = pos
@@ -11,7 +11,7 @@ class Bartender(pygame.sprite.Sprite):
         self.interaction_img = pygame.image.load("assets/pnj/interaction.png").convert_alpha()
         self.panel = pygame.image.load("assets/pnj/talkpanel.png").convert_alpha()
         self.panel_rect = self.panel.get_rect(center = (400,450))
-        self.text = ["salut","esdgdf"]
+        
 
         self.text_index = 0
         self.current_displayed_text = ""
@@ -25,12 +25,11 @@ class Bartender(pygame.sprite.Sprite):
         self.index = 0
 
         self.step = 1
-        self.dialogues = {
-                1:{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",[-4,-3],1]},
-                2:{"text":["tu as le caca ?"],"objectif":"caca","unlock":"None"},
-                3:{"text":["tu as checker la porte ?"],"objectif":"None","unlock":"None"}     
-                          
-        }
+        
+        self.dialogues = dialogues
+        
+
+
 
 
     def update(self,player,keys,screen,camera,inventory,event_tile,map):
@@ -50,6 +49,16 @@ class Bartender(pygame.sprite.Sprite):
         
         elif self.index == len(self.dialogues[self.step]['text']):
 
+            self.in_talk = 0
+            player.control_enabled = True
+            self.index = 0
+            self.current_displayed_text = ""
+            self.talk_index = 0
+            self.in_talk = 0
+            self.text_index = 0
+
+
+
             if self.dialogues[self.step]["objectif"] != "None" and self.dialogues[self.step]["unlock"] != "None":
 
                 if self.dialogues[self.step]["objectif"] != "None":
@@ -61,7 +70,9 @@ class Bartender(pygame.sprite.Sprite):
                                 tile2 = self.dialogues[self.step]["unlock"][2]
 
                                 event_tile.append(eventChangeTile(tile1,tile2,map))
-                            self.step +=1
+
+                            if self.step < len(self.dialogues)-1:
+                                self.step +=1
 
             elif self.dialogues[self.step]["unlock"] != "None":
                 
@@ -72,13 +83,15 @@ class Bartender(pygame.sprite.Sprite):
                     tile2 = self.dialogues[self.step]["unlock"][2]
                     print("caca")
                     event_tile.append(eventChangeTile(tile1,tile2,map))
-                self.step +=1
+                if self.step < len(self.dialogues)-1:
+                    self.step +=1
 
             elif self.dialogues[self.step]["objectif"] != "None":
                 if self.dialogues[self.step]["objectif"] != "None":
                     for i in inventory:
                         if i == self.dialogues[self.step]["objectif"]:  
-                            self.step +=1
+                            if self.step < len(self.dialogues)-1:
+                                self.step +=1
 
             
                 
@@ -87,14 +100,7 @@ class Bartender(pygame.sprite.Sprite):
             
 
        
-            self.in_talk = 0
             
-            player.control_enabled = True
-            self.index = 0
-            self.current_displayed_text = ""
-            self.talk_index = 0
-            self.in_talk = 0
-            self.text_index = 0
 
 
 
