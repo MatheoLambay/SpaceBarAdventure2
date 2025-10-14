@@ -44,7 +44,7 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
     return tiles
 
 def read_data(link):
-    with open(link,"r") as r:
+    with open(link,"r", encoding='utf-8') as r:
         return json.load(r)
 
 class game_manager:
@@ -53,19 +53,8 @@ class game_manager:
         self.tile_size = 64
 
         data = read_data("projectS\data\map1.json")
-        self.load_game(data)
-
         
-
-
-    def load_game(self,data):
-        self.map_data = data["map_data"]
-
-        nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
-        hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
-        roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
-        textures = {**nohitbox_tiles, **hitbox_tiles}
-
+        
         frames_south = load_frames("assets/player/animations/walk-1/south")  # 1.png = repos, 2.png+ = marche
         frames_north = load_frames("assets/player/animations/walk-1/north")
         frames_east = load_frames("assets/player/animations/walk-1/east")
@@ -77,9 +66,25 @@ class game_manager:
         frames_fight_west = load_frames("assets/player/animations/cross-punch/west")
         frames_fight = {"S":frames_fight_south, "N":frames_fight_north, "E":frames_fight_east, "W":frames_fight_west}
 
-        self.player = Player(frames,frames_fight, pos=(14*64, 4*64))
+        x,y = data["player_coord"]
+        self.player = Player(frames,frames_fight, pos=(x*self.tile_size, y*self.tile_size))
         self.inventory = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group(self.player)
+        
+        self.load_game(data)
+        
+
+
+    def load_game(self,data):
+        self.map_data = data["map_data"]
+
+        nohitbox_tiles = load_tileset_as_dict("assets/map/tileset.png", 64)
+        hitbox_tiles = load_tileset_as_dict("assets/map/tilesethitbox.png", 64,False)
+        roofs_tiles = load_tileset_as_dict("assets/map/tileset_roof.png", 64)
+        textures = {**nohitbox_tiles, **hitbox_tiles}
+        x,y = data["player_coord"]
+
+        self.player.set_position((x*self.tile_size,y*self.tile_size))
 
         badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
         badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
@@ -98,12 +103,17 @@ class game_manager:
             self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,pos=(e[0]*self.tile_size, e[1]*self.tile_size)))
         
     
-        pnj_positions = data["pnjs"]
-        self.pnjs = []
-        test=1
-        for tile_pos in pnj_positions:
-            self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(test)))
-            test+=1
+        pnj_data= data["pnjs"]
+        self.pnjs = pygame.sprite.Group()
+        for p in pnj_data:
+            print(p)
+            self.pnjs.add(PNJ("assets/player/animations/walk-1/south/frame_000.png", p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames))
+            
+            
+
+        # for tile_pos in pnj_positions:
+        #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(test)))
+            
 
         self.buildings = []
         self.roofs = data["building"]
@@ -114,25 +124,33 @@ class game_manager:
         
         self.game_map = Map(self.map_data, self.tile_size,textures)
 
-        # ev = eventTile(2,new_map)
-        # event_tiles = pygame.sprite.Group(ev)
+        
         self.map_width = len(self.map_data[0]) * self.tile_size
         self.map_height = len(self.map_data) * self.tile_size
 
         self.camera = Camera(self.map_width, self.map_height, 800, 600)
+        self.event_tiles = pygame.sprite.Group()
+        for e in data["TPtile"]:
+            path = "projectS\data\%s.json"%(e[1])
+            ev = eventTile(e[0],path)
+            self.event_tiles.add(ev)
+
+        self.obstacles = self.game_map.get_obstacles()
+            
+
+
 
     def open(self,screen):
         pass
 
     def update(self,keys,screen,dt):
 
-        if keys[pygame.K_b]:
-            data = read_data("projectS\data\map2.json")
-            self.load_game(data)
+       
+            
         
         obstacles = self.game_map.get_obstacles()
     
-        self.all_sprites.update(keys, obstacles, self.game_map,self.all_ennemis) # Pass game_map
+        self.all_sprites.update(keys, obstacles, self.game_map,self.all_ennemis,self.pnjs) # Pass game_map
 
         
         self.all_ennemis.update(self.player, obstacles,self.map_width,self.map_height,self.tile_size)
@@ -149,7 +167,7 @@ class game_manager:
         # dessiner joueur
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite.rect))
-            # pygame.draw.rect(screen, (0,255,0), camera.apply(sprite.hitbox), 2)
+            pygame.draw.rect(self.screen, (0,255,0), self.camera.apply(sprite.hitbox), 2)
         
         for ennemie in self.all_ennemis:
             # ennemie.update(keys, obstacles, game_map,player)
@@ -158,14 +176,23 @@ class game_manager:
         
         # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
         
-
-        for pnj in self.pnjs:
-            pnj.update(self.player,self.screen,self.camera,keys,self.inventory)
-            self.screen.blit(pnj.image, self.camera.apply(pnj.rect))
+        self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height)
+        for p in self.pnjs:
+            self.screen.blit(p.image,self.camera.apply(p.rect))
         
 
         for b in self.buildings:
             b.draw(self.screen, self.camera, self.player.hitbox)
+
+        for e in self.event_tiles:
+            event = e.detect(self.game_map.get_tile(self.player.hitbox.center)) 
+            if event != 0:
+                data = read_data(event)
+                
+                self.load_game(data)
+               
+
+        
 
 
         self.player.draw_crosshair(self.screen, self.camera)

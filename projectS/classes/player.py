@@ -56,18 +56,19 @@ class Player(pygame.sprite.Sprite):
     def get_tile(self,game_map):
         return game_map.get_tile(self.hitbox.center)
 
+    def set_position(self,pos):
+        x,y = pos
+        self.hitbox.center = (x,y)
+        self.rect.center = (x,y)
 
 
-    def update(self, keys, obstacles, game_map,ennemis): # Add game_map as argument
+    def update(self, keys, obstacles, game_map,ennemis,pnjs): # Add game_map as argument
         if not self.control_enabled:
             return
         
         if self.life < 1:
             print("DEAD")
         
-       
-
-
         dx, dy = 0, 0
 
         # --- Déplacements ---
@@ -156,6 +157,10 @@ class Player(pygame.sprite.Sprite):
             for ennemi in ennemis:
                 if self.crosshair_hitbox.colliderect(ennemi.hitbox):
                     ennemi.life -= 1
+
+            for pnj in pnjs:
+                if self.crosshair_hitbox.colliderect(pnj.rect):
+                    pnj.life -= 1
             
             self.last_click_state = 1
             
