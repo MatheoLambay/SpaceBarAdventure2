@@ -14,7 +14,28 @@ from classes.items import items
 from utility.eventTile import eventTile
 from utility.eventChangeTile import eventChangeTile
 from classes.bartender import Bartender
+from PIL import Image,ImageFilter
 
+def make_blur(surface, intensity=0.18):
+    """
+    Flou léger, ne passe jamais au noir.
+    intensity : <=1 ; plus petit = plus flou (ex: 0.18)
+    """
+    # Faire une copie pour ne jamais modifier la surface originale
+    temp_surf = surface.copy()
+
+    # Extra : convertir en 32-bit pour éviter perte de couleur
+    temp_surf = temp_surf.convert_alpha()
+
+    w, h = temp_surf.get_size()
+    # protéger contre intensity trop petit ou nul
+    small_w, small_h = max(1, int(w * intensity)), max(1, int(h * intensity))
+
+    # Downscale puis upscale
+    small = pygame.transform.smoothscale(temp_surf, (small_w, small_h))
+    blurred = pygame.transform.smoothscale(small, (w, h))
+
+    return blurred
 
 
 def load_frames(folder_path):
@@ -77,6 +98,10 @@ class game_manager:
         #eventChangeTile(-4, 1, data["map_data"])
         self.test = []
 
+        self.pause_flag = 0
+        self.pause = False
+        pygame.event.set_grab(True)
+        pygame.mouse.set_visible(False)
         
 
         
@@ -172,20 +197,40 @@ class game_manager:
 
     def update(self,keys,screen,dt):
 
-        if keys[pygame.K_b] and self.i ==0 :
-            print("spawner")
-            badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
-            badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
-            badguy_east = load_frames("assets/pnj/ennemis/scary-walk/east")
-            badguy_west = load_frames("assets/pnj/ennemis/scary-walk/west")
-            badguy_frames = {"S":badguy_south, "N":badguy_north, "E":badguy_east, "W":badguy_west}
-            badguy_fight_south = load_frames("assets\pnj\ennemis\cross-punch\south")
-            badguy_fight_north = load_frames("assets/pnj/ennemis/cross-punch/north")
-            badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
-            badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
-            badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
-            self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,(14*self.tile_size,16*self.tile_size)))
-            self.i +=1
+        if keys[pygame.K_ESCAPE] and self.pause_flag == 0:
+            if self.pause:
+                self.pause = False
+                pygame.event.set_grab(True)
+                pygame.mouse.set_visible(False)
+            else:
+                snapshot = self.screen.copy()
+                blurred = make_blur(snapshot, intensity=0.05)
+                self.screen.blit(blurred, (0, 0))
+                self.pause = True
+                pygame.event.set_grab(False)
+                pygame.mouse.set_visible(True)
+            self.pause_flag = 1
+        elif not keys[pygame.K_ESCAPE] and self.pause_flag == 1:
+            self.pause_flag = 0
+
+        if self.pause:
+            
+            return 
+
+        # if keys[pygame.K_b] and self.i ==0 :
+        #     print("spawner")
+        #     badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
+        #     badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
+        #     badguy_east = load_frames("assets/pnj/ennemis/scary-walk/east")
+        #     badguy_west = load_frames("assets/pnj/ennemis/scary-walk/west")
+        #     badguy_frames = {"S":badguy_south, "N":badguy_north, "E":badguy_east, "W":badguy_west}
+        #     badguy_fight_south = load_frames("assets\pnj\ennemis\cross-punch\south")
+        #     badguy_fight_north = load_frames("assets/pnj/ennemis/cross-punch/north")
+        #     badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
+        #     badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
+        #     badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
+        #     self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,(14*self.tile_size,16*self.tile_size)))
+        #     self.i +=1
             
             
         

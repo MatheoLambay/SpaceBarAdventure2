@@ -1,53 +1,73 @@
 import pygame
-from player import Player
-from enemy import Enemy
-from pathfinding import TILE
 
 pygame.init()
-
-# --- Map setup ---
-MAP_W, MAP_H = 15, 10
-SCREEN_W, SCREEN_H = MAP_W * TILE, MAP_H * TILE
-screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
-# --- Walls ---
-walls = []
-internal_wall_tiles = [
-    (4,2),(4,3),(4,4),(4,5),
-    (7,0),(7,1),(7,2),(7,3),(7,4),
-    (10,5),(11,5),(12,5),(13,5),
-    (2,7),(3,7),(4,7),(5,7)
-]
-for tx, ty in internal_wall_tiles:
-    walls.append(pygame.Rect(tx*TILE, ty*TILE, TILE, TILE))
+# --- Variables globales ---
+original_surface = None
+is_blurred = False
 
-# --- Player and Enemy ---
-player = Player(TILE, TILE, 4.0, walls)
-enemy = Enemy((MAP_W-2)*TILE, (MAP_H-2)*TILE, 3.0, walls, MAP_W, MAP_H)
 
-# --- Game loop ---
+def apply_blur(surface, intensity=0.2):
+    """
+    Applique un flou sur toute la surface donnée.
+    intensity : entre 0.1 (flou fort) et 0.9 (léger flou)
+    """
+    global original_surface, is_blurred
+
+    if is_blurred:
+        return  # déjà flou
+
+    original_surface = surface.copy()
+    w, h = surface.get_size()
+    small = pygame.transform.smoothscale(surface, (int(w * intensity), int(h * intensity)))
+    blurred = pygame.transform.smoothscale(small, (w, h))
+    surface.blit(blurred, (0, 0))
+    is_blurred = True
+
+
+def remove_blur(surface):
+    """
+    Restaure la surface originale sans flou.
+    """
+    global original_surface, is_blurred
+
+    if not is_blurred or original_surface is None:
+        return  # rien à restaurer
+
+    surface.blit(original_surface, (0, 0))
+    is_blurred = False
+
+
+# --- Exemple d'utilisation ---
+background = pygame.Surface((800, 600))
+background.fill((20, 20, 40))
+pygame.draw.circle(background, (255, 100, 100), (400, 300), 150)
+
+blur_active = False
+
 running = True
 while running:
-    dt = clock.tick(60)
-
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             running = False
 
-    # --- Player input ---
-    player.handle_input()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_b:  # Touche 'B' pour activer/désactiver le blur
+                blur_active = not blur_active
+                if blur_active:
+                    apply_blur(screen)
+                else:
+                    remove_blur(screen)
 
-    # --- Enemy update ---
-    enemy.update(player.rect.center)
+    # Redessiner le fond avant chaque frame
+    screen.blit(background, (0, 0))
 
-    # --- Drawing ---
-    screen.fill((30,30,30))
-    for w in walls:
-        pygame.draw.rect(screen, (200,200,200), w)
-    pygame.draw.rect(screen, (50,150,255), player.rect)
-    pygame.draw.rect(screen, (220,60,60), enemy.rect)
+    if blur_active:
+        apply_blur(screen)
 
     pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()

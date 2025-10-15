@@ -10,7 +10,8 @@ class mainMenu:
         self.btn = Button(screen,400,300,self.image)
 
     def open(self,screen):
-        pass
+        pygame.mouse.set_visible(True) 
+        pygame.event.set_grab(False)
 
     def close(self):
         pass
