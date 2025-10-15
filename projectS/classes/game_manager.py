@@ -97,6 +97,7 @@ class game_manager:
         x,y = data["player_coord"]
 
         self.player.set_position((x*self.tile_size-self.tile_size//2,y*self.tile_size-self.tile_size//2))
+        self.game_map = Map(self.map_data, self.tile_size,textures)
 
         badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
         badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
@@ -118,10 +119,10 @@ class game_manager:
         pnj_data= data["pnjs"]
         self.pnjs = pygame.sprite.Group()
         for p in pnj_data:
-            self.pnjs.add(PNJ("assets/player/animations/walk-1/south/frame_000.png", p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames))
+            self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames))
             
             
-
+        self.i = 0
         # for tile_pos in pnj_positions:
         #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(test)))
             
@@ -134,7 +135,7 @@ class game_manager:
             self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0], pos_y=roof[1][1]))
         
         
-        self.game_map = Map(self.map_data, self.tile_size,textures)
+        
 
         
         self.map_width = len(self.map_data[0]) * self.tile_size
@@ -167,8 +168,20 @@ class game_manager:
 
     def update(self,keys,screen,dt):
 
-        # if keys[pygame.K_b]:
-        #     self.inventory.append("caca")
+        if keys[pygame.K_b] and self.i ==0 :
+            print("spawner")
+            badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
+            badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
+            badguy_east = load_frames("assets/pnj/ennemis/scary-walk/east")
+            badguy_west = load_frames("assets/pnj/ennemis/scary-walk/west")
+            badguy_frames = {"S":badguy_south, "N":badguy_north, "E":badguy_east, "W":badguy_west}
+            badguy_fight_south = load_frames("assets\pnj\ennemis\cross-punch\south")
+            badguy_fight_north = load_frames("assets/pnj/ennemis/cross-punch/north")
+            badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
+            badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
+            badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
+            self.all_ennemis.add(Badguy(badguy_frames,badguy_fight_frames,(14*self.tile_size,16*self.tile_size)))
+            self.i +=1
             
             
         
@@ -184,9 +197,7 @@ class game_manager:
         # --- Rendu ---
         self.game_map.draw(self.screen, self.camera)
 
-        # # dessiner obstacles avec offset caméra
-        # for obs,color in obstacles:
-        #     pygame.draw.rect(screen, color, camera.apply(obs))
+        
 
         # dessiner joueur
         for sprite in self.all_sprites:
@@ -203,6 +214,7 @@ class game_manager:
         self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height)
         for p in self.pnjs:
             self.screen.blit(p.image,self.camera.apply(p.rect))
+            pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
 
         for b in self.buildings:
@@ -224,7 +236,9 @@ class game_manager:
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
-        # self.event_tiles.update(self.game_map.get_tile(self.player.hitbox.center),self.game_map)
+        # dessiner obstacles avec offset caméra
+        # for obs in obstacles:
+        #     pygame.draw.rect(self.screen, "red", self.camera.apply(obs),1)
 
         self.player.draw_crosshair(self.screen, self.camera)
         self.player.draw_life(self.screen, self.camera)

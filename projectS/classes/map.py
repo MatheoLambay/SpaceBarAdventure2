@@ -21,6 +21,7 @@ class Map:
         self.special_tiles = {
             #largeur, hauteur, offset_x, offset_y 
             -1:((self.tile_size, self.tile_size//2,0,0),),
+            -18:((self.tile_size, self.tile_size//2,0,0),),
             -2:((self.tile_size, self.tile_size-16,0,16),),
             -12:((10, self.tile_size,0,0),(self.tile_size,10,0,0)),
             -13:((self.tile_size,10,0,0),),
@@ -54,6 +55,9 @@ class Map:
     def new_map_data(self,new_map):
         self.map_data = new_map
         self.set_obstacles()
+
+    def get_special_tiles(self):
+        return self.special_tiles
         
     def get_map_data(self):
         return self.map_data

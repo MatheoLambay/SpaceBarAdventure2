@@ -52,6 +52,7 @@ class PNJ(pygame.sprite.Sprite):
         self.target_index = 0
         self.path_timer = 0
         self.path_update_interval = 12
+        self.hitbox = self.rect.inflate(-30, -20)  # for collisions
         
         
 
@@ -77,7 +78,7 @@ class PNJ(pygame.sprite.Sprite):
 
         if self.life < self.max_life and self.can_attack:
 
-            if self.rect.colliderect(player.hitbox):
+            if self.hitbox.colliderect(player.hitbox):
                 currents_frames = self.frames_fight[self.direction][1:]
                 self.frames_fight_index += self.animation_speed
                 if self.frames_fight_index >= len(currents_frames):
@@ -97,6 +98,7 @@ class PNJ(pygame.sprite.Sprite):
                 # --- Update rect & rect to match float position ---
                 
                 self.rect.center = (int(self.pos.x), int(self.pos.y))
+                self.hitbox.center = (int(self.pos.x), int(self.pos.y))
 
                 currents_frames = self.frames_walk[self.direction][1:]
                 self.frame_walk_index += self.animation_speed
@@ -227,7 +229,7 @@ class PNJ(pygame.sprite.Sprite):
         for _ in range(steps):
             # Full move
             new_pos = self.pos + step_vec
-            new_rect = self.rect.copy()
+            new_rect = self.hitbox.copy()
             new_rect.center = (int(new_pos.x), int(new_pos.y))
             if not any(new_rect.colliderect(o) for o in obstacles):
                 self.pos = new_pos
