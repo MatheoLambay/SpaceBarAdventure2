@@ -182,9 +182,12 @@ class game_manager:
             nd = {int(k): v for k, v in gp[0].items()}
             self.great_pnj.add(Bartender(gp[1],nd))
 
-        self.map_indicator = items("assets/map/map_indiquateur.png",(4,11),64)
-        self.game_map.add_obstacles(self.map_indicator.hitbox)
-            
+        self.map_objects = pygame.sprite.Group()
+        for d in data["object"]:
+            new_d = items(d[0],d[1],self.tile_size)
+            self.map_objects.add(new_d)
+            self.game_map.add_obstacles(new_d.hitbox)
+                
 
             
     def load_map(self,new_map):
@@ -246,26 +249,28 @@ class game_manager:
         # --- Rendu ---
         self.game_map.draw(self.screen, self.camera)
 
-        self.screen.blit(self.map_indicator.image,self.camera.apply(self.map_indicator.rect))
-        self.map_indicator.update(self.screen,self.player,keys,self.camera)
+
+        for obj in self.map_objects:
+            self.screen.blit(obj.image,self.camera.apply(obj.rect))
+            obj.update(self.screen,self.player,keys,self.camera)
         # pygame.draw.rect(self.screen, "blue", self.camera.apply(self.map_indicator.hitbox),1)
 
         # dessiner joueur
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite.rect))
-            pygame.draw.rect(self.screen, (0,255,0), self.camera.apply(sprite.hitbox), 2)
+            # pygame.draw.rect(self.screen, (0,255,0), self.camera.apply(sprite.hitbox), 2)
         
         for ennemie in self.all_ennemis:
             # ennemie.update(keys, obstacles, game_map,player)
             self.screen.blit(ennemie.image,self.camera.apply(ennemie.rect))
-            pygame.draw.rect(self.screen,'red',self.camera.apply(ennemie.hitbox),1)
+            # pygame.draw.rect(self.screen,'red',self.camera.apply(ennemie.hitbox),1)
         
         # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
         
         self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height,self.inventory)
         for p in self.pnjs:
             self.screen.blit(p.image,self.camera.apply(p.rect))
-            pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
+            # pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
         self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.test,self.game_map.get_map_data())
         for g in self.great_pnj:

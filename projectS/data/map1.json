@@ -26,7 +26,7 @@
         [-32,-33,-33,-33,-33,-33,-33,-33,-33,-33,-33,-34,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  5]
     ],
 
-
+    "object":[["assets/map/map_indiquateur.png",[4,11]]],
     "pnjs":[[[14,16],["ké ??","Dégage connard !"],1,"assets/pnj/ennemis/homeless/south.png","sdf"]],
     "ennemis":[],
     "building":[
