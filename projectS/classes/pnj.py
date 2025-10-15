@@ -2,7 +2,7 @@ import pygame
 from utility.Apathfinding import astar  # your A* function
 
 class PNJ(pygame.sprite.Sprite):
-    def __init__(self, frames, tile_pos, tile_size,talk,can_attack,frames_walk,frame_fight):
+    def __init__(self, frames, tile_pos, tile_size,talk,can_attack,frames_walk,frame_fight,drop):
         """
         frames : liste d'images pour l'animation
         tile_pos : (colonne, ligne) sur la matrice
@@ -53,6 +53,7 @@ class PNJ(pygame.sprite.Sprite):
         self.path_timer = 0
         self.path_update_interval = 12
         self.hitbox = self.rect.inflate(-30, -20)  # for collisions
+        self.drop = drop
         
         
 
@@ -70,9 +71,12 @@ class PNJ(pygame.sprite.Sprite):
     def attack(self,cible):
         cible.life -=1
 
-    def update(self,player,screen,camera,keys,obstacles,map_w, map_h):
+    def update(self,player,screen,camera,keys,obstacles,map_w, map_h,inventory):
 
         if self.life == 0 and self.can_attack:
+            if self.drop != "None":
+                if self.drop not in inventory:
+                    inventory.append(self.drop)
             self.kill()
             return
 
@@ -135,9 +139,9 @@ class PNJ(pygame.sprite.Sprite):
 
             if self.in_talk:
                 screen.blit(self.panel,self.panel_rect)
-                my_font = pygame.font.SysFont('Comic Sans MS', 30)
+                my_font = pygame.font.SysFont('Comic Sans MS', 20)
                 text_surface = my_font.render(self.current_displayed_text, False, (0, 0, 0))
-                screen.blit(text_surface, self.panel_rect.topleft)
+                screen.blit(text_surface, (self.panel_rect.topleft[0]+20,self.panel_rect.topleft[1]+10))
         
                 # --- display letter one by one
                 current_time = pygame.time.get_ticks()

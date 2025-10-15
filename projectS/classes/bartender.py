@@ -79,51 +79,14 @@ class Bartender(pygame.sprite.Sprite):
                         inventory.append(self.dialogues[self.step]["unlock"][1])
 
 
-            # if self.dialogues[self.step]["objectif"] != "None":
-            #     for i in inventory:
-            #         if i == self.dialogues[self.step]["objectif"]:  
-                        
-            #             if self.dialogues[self.step]["unlock"][0] == "door":
-            #                 tile1 = self.dialogues[self.step]["unlock"][1]
-            #                 tile2 = self.dialogues[self.step]["unlock"][2]
 
-            #                 event_tile.append(eventChangeTile(tile1,tile2,map))
-                        
-            #             elif self.dialogues[self.step]["unlock"][0] == "inventory":
-                            
-            #                 inventory.append(self.dialogues[self.step]["unlock"][1])
-                        
-
-            #             if self.step < len(self.dialogues)-1:
-            #                 self.step +=1
-            #             break
-            # else:
-                
-            #     if self.dialogues[self.step]["unlock"] != "None":
-                    
-            #         print(self.dialogues[self.step]["unlock"])
-            #         if self.dialogues[self.step]["unlock"][0] == "door":
-
-            #             tile1 = self.dialogues[self.step]["unlock"][1]
-            #             tile2 = self.dialogues[self.step]["unlock"][2]
-            #             print("caca")
-            #             event_tile.append(eventChangeTile(tile1,tile2,map))
-
-            #         elif self.dialogues[self.step]["unlock"][0] == "inventory":
-                            
-            #                 inventory.append(self.dialogues[self.step]["unlock"][1])
-                    
-
-            #     if self.step <= len(self.dialogues)-1:
-            #         self.step +=1
-                    
 
 
         if self.in_talk:
             screen.blit(self.panel,self.panel_rect)
-            my_font = pygame.font.SysFont('Comic Sans MS', 30)
+            my_font = pygame.font.SysFont('Comic Sans MS', 20)
             text_surface = my_font.render(self.current_displayed_text, False, (0, 0, 0))
-            screen.blit(text_surface, self.panel_rect.topleft)
+            screen.blit(text_surface, (self.panel_rect.topleft[0]+20,self.panel_rect.topleft[1]+10))
     
             # --- display letter one by one
             current_time = pygame.time.get_ticks()

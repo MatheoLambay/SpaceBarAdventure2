@@ -119,7 +119,7 @@ class game_manager:
         pnj_data= data["pnjs"]
         self.pnjs = pygame.sprite.Group()
         for p in pnj_data:
-            self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames))
+            self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames,p[4]))
             
             
         self.i = 0
@@ -211,7 +211,7 @@ class game_manager:
         
         # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
         
-        self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height)
+        self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height,self.inventory)
         for p in self.pnjs:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
