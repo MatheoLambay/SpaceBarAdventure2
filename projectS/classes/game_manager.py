@@ -122,7 +122,7 @@ class game_manager:
             self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames,p[4]))
             
             
-        self.i = 0
+        
         # for tile_pos in pnj_positions:
         #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(test)))
             
@@ -150,11 +150,15 @@ class game_manager:
 
         self.obstacles = self.game_map.get_obstacles()
 
+
         self.great_pnj = pygame.sprite.Group()
         for gp in data["greatpnj"]:
           # Conversion des clés en int
             nd = {int(k): v for k, v in gp[0].items()}
             self.great_pnj.add(Bartender(gp[1],nd))
+
+        self.map_indicator = items("assets/map/map_indiquateur.png",(4,11),64)
+        self.game_map.add_obstacles(self.map_indicator.hitbox)
             
 
             
@@ -197,7 +201,9 @@ class game_manager:
         # --- Rendu ---
         self.game_map.draw(self.screen, self.camera)
 
-        
+        self.screen.blit(self.map_indicator.image,self.camera.apply(self.map_indicator.rect))
+        self.map_indicator.update(self.screen,self.player,keys,self.camera)
+        # pygame.draw.rect(self.screen, "blue", self.camera.apply(self.map_indicator.hitbox),1)
 
         # dessiner joueur
         for sprite in self.all_sprites:
@@ -216,6 +222,13 @@ class game_manager:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.test,self.game_map.get_map_data())
+        for g in self.great_pnj:
+            self.screen.blit(g.image,self.camera.apply(g.rect))
+
+
+        
+
 
         for b in self.buildings:
             b.draw(self.screen, self.camera, self.player.hitbox)
@@ -232,18 +245,16 @@ class game_manager:
             self.game_map.new_map_data(new)
             self.test.pop(t)
                
-        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.test,self.game_map.get_map_data())
-        for g in self.great_pnj:
-            self.screen.blit(g.image,self.camera.apply(g.rect))
-
+        
         # dessiner obstacles avec offset caméra
         # for obs in obstacles:
         #     pygame.draw.rect(self.screen, "red", self.camera.apply(obs),1)
 
         self.player.draw_crosshair(self.screen, self.camera)
         self.player.draw_life(self.screen, self.camera)
+        
 
-        print(self.inventory)
+        # print(self.inventory)
         # pygame.draw.rect(screen,'green',camera.apply(player.hitbox),1)
 
         # event_tiles.update(game_map.get_tile(player.hitbox.center),game_map)

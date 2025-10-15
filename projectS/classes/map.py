@@ -61,6 +61,9 @@ class Map:
         
     def get_map_data(self):
         return self.map_data
+    
+    def add_obstacles(self,new_obs):
+        self.obstacles.append(new_obs)
        
     def get_obstacles(self):
         """Retourne la liste des obstacles pour collisions"""

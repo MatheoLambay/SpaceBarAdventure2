@@ -1,4 +1,4 @@
 # SpaceBarAdventure2
 
 
-faire des fonctions pour définir les zones (map,obstacles,pnjs,event,ennemis,...)
+finir items, adapter to json, adapter game manager
