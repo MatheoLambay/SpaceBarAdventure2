@@ -167,8 +167,8 @@ class game_manager:
 
     def update(self,keys,screen,dt):
 
-        if keys[pygame.K_b]:
-            self.inventory.append("caca")
+        # if keys[pygame.K_b]:
+        #     self.inventory.append("caca")
             
             
         
@@ -228,6 +228,8 @@ class game_manager:
 
         self.player.draw_crosshair(self.screen, self.camera)
         self.player.draw_life(self.screen, self.camera)
+
+        print(self.inventory)
         # pygame.draw.rect(screen,'green',camera.apply(player.hitbox),1)
 
         # event_tiles.update(game_map.get_tile(player.hitbox.center),game_map)

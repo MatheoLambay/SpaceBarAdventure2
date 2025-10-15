@@ -47,9 +47,8 @@
         [
 
             {
-                "1":{"text":["salut","bienvenu sur la station STFCDFFFGRRDGCKGFH222"],"objectif":"None","unlock":["door",[-4,-3],1]},
-                "2":{"text":["tu as le caca ?"],"objectif":"caca","unlock":"None"},
-                "3":{"text":["tu as checker la porte ?"],"objectif":"None","unlock":"None"}   
+                "1":{"text":["Salut","bienvenu dans le SpaceBar","Tu es le nouveau ?"," Va voir BroadCaster il a besoin d'aide"],"objectif":"None","unlock":["inventory","bartender1"]}
+        
             },
             [10,9]
     
@@ -57,7 +56,10 @@
          [
 
             {
-                "1":{"text":["salut"],"objectif":"None","unlock":["door",[-4,-3],1]}   
+                "1":{"text":["salut"],"objectif":"None","unlock":"None"},
+                "2":{"text":["le nouveau, parfait","j'ai un problème, y'a un sdf bloqué"],"objectif":"bartender1","unlock":["door",[-4,-3],1]},
+                "3":{"text":["Alors le sdf ?"],"objectif":"None","unlock":"None"}
+                
             },
             [17,9]
     

@@ -7,4 +7,5 @@ class Zone:
         self.map_data = map_data
         self.building = building
 
-    def update(self:)
+    def update(self):
+        pass

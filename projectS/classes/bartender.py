@@ -57,51 +57,66 @@ class Bartender(pygame.sprite.Sprite):
             self.in_talk = 0
             self.text_index = 0
 
-
-
-            if self.dialogues[self.step]["objectif"] != "None" and self.dialogues[self.step]["unlock"] != "None":
-
-                if self.dialogues[self.step]["objectif"] != "None":
+            if self.step+1 <= len(self.dialogues):
+                if self.dialogues[self.step+1]["objectif"] != "None":
                     for i in inventory:
-                        if i == self.dialogues[self.step]["objectif"]:  
-                            
-                            if self.dialogues[self.step]["unlock"][0] == "door":
-                                tile1 = self.dialogues[self.step]["unlock"][1]
-                                tile2 = self.dialogues[self.step]["unlock"][2]
-
-                                event_tile.append(eventChangeTile(tile1,tile2,map))
-
-                            if self.step < len(self.dialogues)-1:
-                                self.step +=1
-
-            elif self.dialogues[self.step]["unlock"] != "None":
-                
-                print(self.dialogues[self.step]["unlock"])
+                        if i == self.dialogues[self.step+1]["objectif"]:
+                            self.step +=1
+                            break
+                else:
+                    self.step +=1
+            
+            if self.dialogues[self.step]["unlock"] != "None":
                 if self.dialogues[self.step]["unlock"][0] == "door":
 
                     tile1 = self.dialogues[self.step]["unlock"][1]
                     tile2 = self.dialogues[self.step]["unlock"][2]
-                    print("caca")
-                    event_tile.append(eventChangeTile(tile1,tile2,map))
-                if self.step < len(self.dialogues)-1:
-                    self.step +=1
-
-            elif self.dialogues[self.step]["objectif"] != "None":
-                if self.dialogues[self.step]["objectif"] != "None":
-                    for i in inventory:
-                        if i == self.dialogues[self.step]["objectif"]:  
-                            if self.step < len(self.dialogues)-1:
-                                self.step +=1
-
-            
-                
                     
-        
-            
+                    event_tile.append(eventChangeTile(tile1,tile2,map))
 
-       
-            
+                elif self.dialogues[self.step]["unlock"][0] == "inventory":
+                    if self.dialogues[self.step]["unlock"][1] not in inventory:
+                        inventory.append(self.dialogues[self.step]["unlock"][1])
 
+
+            # if self.dialogues[self.step]["objectif"] != "None":
+            #     for i in inventory:
+            #         if i == self.dialogues[self.step]["objectif"]:  
+                        
+            #             if self.dialogues[self.step]["unlock"][0] == "door":
+            #                 tile1 = self.dialogues[self.step]["unlock"][1]
+            #                 tile2 = self.dialogues[self.step]["unlock"][2]
+
+            #                 event_tile.append(eventChangeTile(tile1,tile2,map))
+                        
+            #             elif self.dialogues[self.step]["unlock"][0] == "inventory":
+                            
+            #                 inventory.append(self.dialogues[self.step]["unlock"][1])
+                        
+
+            #             if self.step < len(self.dialogues)-1:
+            #                 self.step +=1
+            #             break
+            # else:
+                
+            #     if self.dialogues[self.step]["unlock"] != "None":
+                    
+            #         print(self.dialogues[self.step]["unlock"])
+            #         if self.dialogues[self.step]["unlock"][0] == "door":
+
+            #             tile1 = self.dialogues[self.step]["unlock"][1]
+            #             tile2 = self.dialogues[self.step]["unlock"][2]
+            #             print("caca")
+            #             event_tile.append(eventChangeTile(tile1,tile2,map))
+
+            #         elif self.dialogues[self.step]["unlock"][0] == "inventory":
+                            
+            #                 inventory.append(self.dialogues[self.step]["unlock"][1])
+                    
+
+            #     if self.step <= len(self.dialogues)-1:
+            #         self.step +=1
+                    
 
 
         if self.in_talk:
@@ -125,17 +140,56 @@ class Bartender(pygame.sprite.Sprite):
                     self.current_displayed_text = self.dialogues[self.step]['text'][self.text_index]
                     self.talk_index = len(self.dialogues[self.step]['text'][self.text_index])
                 else: # ---
-                    self.index += 1
-                    
 
+                    self.index += 1
                     self.text_index +=1
-                    
-                            
-                    
                     self.current_displayed_text = ""
                     self.talk_index = 0
+
                 
                 self.last_talk = 1
 
             elif not keys[pygame.K_RETURN] and self.last_talk == 1:
                 self.last_talk = 0
+
+
+
+            # if self.dialogues[self.step]["objectif"] != "None" and self.dialogues[self.step]["unlock"] != "None":
+
+            #     if self.dialogues[self.step]["objectif"] != "None":
+            #         for i in inventory:
+            #             if i == self.dialogues[self.step]["objectif"]:  
+                            
+            #                 if self.dialogues[self.step]["unlock"][0] == "door":
+            #                     tile1 = self.dialogues[self.step]["unlock"][1]
+            #                     tile2 = self.dialogues[self.step]["unlock"][2]
+
+            #                     event_tile.append(eventChangeTile(tile1,tile2,map))
+                            
+            #                 elif self.dialogues[self.step]["unlock"][0] == "inventory":
+                                
+            #                     inventory.append(self.dialogues[self.step]["unlock"][1])
+                            
+
+            #                 if self.step < len(self.dialogues)-1:
+            #                     self.step +=1
+            #                 break
+
+            # elif self.dialogues[self.step]["unlock"] != "None":
+                
+            #     print(self.dialogues[self.step]["unlock"])
+            #     if self.dialogues[self.step]["unlock"][0] == "door":
+
+            #         tile1 = self.dialogues[self.step]["unlock"][1]
+            #         tile2 = self.dialogues[self.step]["unlock"][2]
+            #         print("caca")
+            #         event_tile.append(eventChangeTile(tile1,tile2,map))
+            #     if self.step < len(self.dialogues)-1:
+            #         self.step +=1
+
+            # elif self.dialogues[self.step]["objectif"] != "None":
+            #     if self.dialogues[self.step]["objectif"] != "None":
+            #         for i in inventory:
+            #             if i == self.dialogues[self.step]["objectif"]:  
+            #                 if self.step < len(self.dialogues)-1:
+            #                     self.step +=1
