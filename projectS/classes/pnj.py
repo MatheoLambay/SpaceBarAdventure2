@@ -71,6 +71,7 @@ class PNJ(pygame.sprite.Sprite):
     def attack(self,cible):
         cible.life -=1
 
+
     def update(self,player,screen,camera,keys,obstacles,map_w, map_h,inventory):
 
         if self.life == 0 and self.can_attack:

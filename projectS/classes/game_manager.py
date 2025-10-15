@@ -234,12 +234,12 @@ class game_manager:
             
             
         
-        obstacles = self.game_map.get_obstacles()
+        # obstacles = self.game_map.get_obstacles()
     
-        self.all_sprites.update(keys, obstacles, self.game_map,self.all_ennemis,self.pnjs) # Pass game_map
+        self.all_sprites.update(keys, self.obstacles, self.game_map,self.all_ennemis,self.pnjs) # Pass game_map
 
         
-        self.all_ennemis.update(self.player, obstacles,self.map_width,self.map_height,self.tile_size)
+        self.all_ennemis.update(self.player, self.obstacles,self.map_width,self.map_height,self.tile_size)
         
         self.camera.update(self.player)
 
@@ -285,10 +285,12 @@ class game_manager:
                 
                 self.load_game(data)
 
+
         for t in range(len(self.test)):
             new = self.test[t].switch_tile()
             self.game_map.new_map_data(new)
             self.test.pop(t)
+            self.obstacles = self.game_map.get_obstacles()
                
         
         # dessiner obstacles avec offset caméra
