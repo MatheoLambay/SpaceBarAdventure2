@@ -264,14 +264,14 @@ class game_manager:
         for ennemie in self.all_ennemis:
             # ennemie.update(keys, obstacles, game_map,player)
             self.screen.blit(ennemie.image,self.camera.apply(ennemie.rect))
-            # pygame.draw.rect(self.screen,'red',self.camera.apply(ennemie.hitbox),1)
+            pygame.draw.rect(self.screen,'red',self.camera.apply(ennemie.hitbox),1)
         
         # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
         
         self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height,self.inventory)
         for p in self.pnjs:
             self.screen.blit(p.image,self.camera.apply(p.rect))
-            # pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
+            pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
         self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_map,self.game_map.get_map_data())
         for g in self.great_pnj:

@@ -52,13 +52,9 @@ class PNJ(pygame.sprite.Sprite):
         self.target_index = 0
         self.path_timer = 0
         self.path_update_interval = 12
-        self.hitbox = self.rect.inflate(-30, -20)  # for collisions
+        self.hitbox = self.rect.inflate(-30, -10)  # for collisions
         self.drop = drop
         
-        
-
-
-        # self.animation_speed = 0.15
 
     # Convert position to tile coordinates
     def tile_from_pos(self, pos, tile_size):
