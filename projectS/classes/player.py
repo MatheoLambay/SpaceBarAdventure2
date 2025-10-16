@@ -12,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.frames[self.direction][0]  # Default to south idle frame
         self.rect = self.image.get_rect(center=pos)
         self.hitbox = self.rect.inflate(-30, -20)  # hitbox plus petite que le sprite
+        self.foot_hitbox = pygame.Rect(self.hitbox.left,self.hitbox.bottom - 10,self.hitbox.width,10)
         self.animation_speed = 0.15
         # self.current_tile = None 
         self.control_enabled = True 
@@ -115,29 +116,42 @@ class Player(pygame.sprite.Sprite):
 
         # --- Collision X ---
         self.rect.x += dx
-        self.hitbox.x += dx  # Update hitbox position
+        self.hitbox.x += dx
+        self.foot_hitbox.x += dx  # update foot hitbox too
+
         for obs in obstacles:
-            if self.hitbox.colliderect(obs):
+            if self.foot_hitbox.colliderect(obs):  # ✅ check collision with foot hitbox
                 if dx > 0:
-                    self.hitbox.right = obs.left
-                    self.rect.right = self.hitbox.right + (self.rect.width - self.hitbox.width) / 2
+                    self.foot_hitbox.right = obs.left
                 elif dx < 0:
-                    self.hitbox.left = obs.right
-                    self.rect.left = self.hitbox.left - (self.rect.width - self.hitbox.width) / 2
+                    self.foot_hitbox.left = obs.right
+
+                # 🧩 reposition hitbox and rect based on new foot hitbox
+                self.hitbox.left = self.foot_hitbox.left
+                self.hitbox.bottom = self.foot_hitbox.bottom
+                self.rect.centerx = self.hitbox.centerx
+                self.rect.bottom = self.hitbox.bottom + (self.rect.height - self.hitbox.height) / 2
 
         # --- Collision Y ---
         self.rect.y += dy
-        self.hitbox.y += dy  # Update hitbox position
-        for obs in obstacles:
-            if self.hitbox.colliderect(obs):
-                if dy > 0:
-                    self.hitbox.bottom = obs.top
-                    self.rect.bottom = self.hitbox.bottom + (self.rect.height - self.hitbox.height) / 2
-                elif dy < 0:
-                    self.hitbox.top = obs.bottom
-                    self.rect.top = self.hitbox.top - (self.rect.height - self.hitbox.height) / 2
+        self.hitbox.y += dy
+        self.foot_hitbox.y += dy  # ✅ update foot hitbox position
 
-        # --- Tile Detection ---
+        for obs in obstacles:
+            if self.foot_hitbox.colliderect(obs):  # ✅ check with feet only
+                if dy > 0:  # moving down → floor collision
+                    self.foot_hitbox.bottom = obs.top
+                elif dy < 0:  # moving up → ceiling
+                    self.foot_hitbox.top = obs.bottom
+
+                # 🧩 reposition other elements
+                self.hitbox.left = self.foot_hitbox.left
+                self.hitbox.bottom = self.foot_hitbox.bottom
+                self.rect.centerx = self.hitbox.centerx
+                self.rect.bottom = self.hitbox.bottom + (self.rect.height - self.hitbox.height) / 2
+
+        # --- Always sync foot hitbox to hitbox after movement ---
+        self.foot_hitbox.topleft = (self.hitbox.left, self.hitbox.bottom - 10)
 
         # --- Mouse Click Detection ---
         

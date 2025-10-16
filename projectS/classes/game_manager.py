@@ -257,7 +257,9 @@ class game_manager:
         # dessiner joueur
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite.rect))
-            # pygame.draw.rect(self.screen, (0,255,0), self.camera.apply(sprite.hitbox), 2)
+            pygame.draw.rect(self.screen, (255,0,0), self.camera.apply(sprite.hitbox), 1)
+            pygame.draw.rect(self.screen, (0,255,0), self.camera.apply(sprite.foot_hitbox), 1)
+            pygame.draw.rect(self.screen, (0,0,255), self.camera.apply(sprite.rect), 1)
         
         for ennemie in self.all_ennemis:
             # ennemie.update(keys, obstacles, game_map,player)

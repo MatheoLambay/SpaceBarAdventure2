@@ -20,17 +20,8 @@ class Map:
         self.obstacles_coords = []
         self.special_tiles = {
             #largeur, hauteur, offset_x, offset_y 
-            -1:((self.tile_size, self.tile_size//2,0,0),),
-            -18:((self.tile_size, self.tile_size//2,0,0),),
-            -2:((self.tile_size, self.tile_size-16,0,16),),
-            -12:((10, self.tile_size,0,0),(self.tile_size,10,0,0)),
-            -13:((self.tile_size,10,0,0),),
-            -14:((self.tile_size,10,0,0),(10,self.tile_size, self.tile_size-10,0)),
-            -22:((10,self.tile_size,0,0),),
-            -24:((10, tile_size, tile_size - 10, 0),),
-            -32:((10,self.tile_size,0,0),(self.tile_size,10,0,self.tile_size - 10)),
-            -33:((self.tile_size,10,0,self.tile_size-10),),
-            -34:((self.tile_size,10,0,self.tile_size-10),(10,self.tile_size,self.tile_size-10,0))
+            
+            
         }  
 
         self.set_obstacles()
