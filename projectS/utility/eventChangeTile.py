@@ -1,4 +1,3 @@
-import pygame
 
 class eventChangeTile:
     def __init__(self,tile,new_tile,map):

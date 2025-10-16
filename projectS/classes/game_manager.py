@@ -77,7 +77,6 @@ class game_manager:
 
         data = read_data("projectS\data\map1.json")
         
-        
         frames_south = load_frames("assets/player/animations/walk-1/south")  # 1.png = repos, 2.png+ = marche
         frames_north = load_frames("assets/player/animations/walk-1/north")
         frames_east = load_frames("assets/player/animations/walk-1/east")
@@ -96,7 +95,7 @@ class game_manager:
         
         self.load_game(data)
         #eventChangeTile(-4, 1, data["map_data"])
-        self.test = []
+        self.event_change_map = []
 
         self.pause_flag = 0
         self.pause = False
@@ -149,7 +148,7 @@ class game_manager:
             
         
         # for tile_pos in pnj_positions:
-        #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(test)))
+        #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(event_change_map)))
             
 
         self.buildings = []
@@ -272,7 +271,7 @@ class game_manager:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             # pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
-        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.test,self.game_map.get_map_data())
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_map,self.game_map.get_map_data())
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
@@ -291,10 +290,11 @@ class game_manager:
                 self.load_game(data)
 
 
-        for t in range(len(self.test)):
-            new = self.test[t].switch_tile()
+        #ici pour les caisses une fois détruite 
+        for t in range(len(self.event_change_map)):
+            new = self.event_change_map[t].switch_tile()
             self.game_map.new_map_data(new)
-            self.test.pop(t)
+            self.event_change_map.pop(t)
             self.obstacles = self.game_map.get_obstacles()
                
         
