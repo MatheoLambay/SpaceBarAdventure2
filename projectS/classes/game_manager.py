@@ -14,7 +14,9 @@ from classes.items import items
 from utility.eventTile import eventTile
 from utility.eventChangeTile import eventChangeTile
 from classes.bartender import Bartender
-from PIL import Image,ImageFilter
+from classes.decoObject import decoObj
+
+
 
 def make_blur(surface, intensity=0.18):
     """
@@ -146,7 +148,9 @@ class game_manager:
             self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames,p[4]))
             
             
+        self.decoObj = decoObj("assets\map\spaceship1person.png",(1,1),64)
         
+
         # for tile_pos in pnj_positions:
         #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(event_change_map)))
             
@@ -254,6 +258,8 @@ class game_manager:
             obj.update(self.screen,self.player,keys,self.camera)
         # pygame.draw.rect(self.screen, "blue", self.camera.apply(self.map_indicator.hitbox),1)
 
+        
+
         # dessiner joueur
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite.rect))
@@ -279,7 +285,7 @@ class game_manager:
 
 
         
-
+        self.screen.blit(self.decoObj.image,self.camera.apply(self.decoObj.rect))
 
         for b in self.buildings:
             b.draw(self.screen, self.camera, self.player.hitbox)
