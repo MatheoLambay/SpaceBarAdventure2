@@ -135,6 +135,7 @@ class game_manager:
         badguy_fight_east = load_frames("assets/pnj/ennemis/cross-punch/east")
         badguy_fight_west = load_frames("assets/pnj/ennemis/cross-punch/west")
         badguy_fight_frames = {"S":badguy_fight_south, "N":badguy_fight_north, "E":badguy_fight_east, "W":badguy_fight_west}
+
         
         self.all_ennemis = pygame.sprite.Group()
         ennemis_position = data["ennemis"]
@@ -144,8 +145,14 @@ class game_manager:
     
         pnj_data= data["pnjs"]
         self.pnjs = pygame.sprite.Group()
+        self.windrose = ["S","N","E","W"]
         for p in pnj_data:
-            self.pnjs.add(PNJ(p[3], p[0], self.tile_size, p[1],p[2],badguy_frames,badguy_fight_frames,p[4]))
+            temp_dict = {}
+            for i in range(len(p["running_path"])):
+                temp_dict[self.windrose[i]] = load_frames(p["running_path"][i])
+            
+            
+            self.pnjs.add(PNJ(p["neutral_path"], p["coord"], self.tile_size, p["text"],p["can_attack"],temp_dict,badguy_fight_frames,p["quest_flag"]))
             
             
         self.decoObj = decoObj("assets\map\spaceship1person.png",(1,1),64)

@@ -27,7 +27,22 @@
     ],
 
     "object":[["assets/map/map_indiquateur.png",[4,11]]],
-    "pnjs":[[[14,16],["ké ??","Dégage connard !"],1,"assets/pnj/ennemis/homeless/south.png","sdf"]],
+    "pnjs":
+    [
+        {
+            "coord":[14,16],
+            "text":["ké ??","Dégage connard !"],
+            "can_attack":1,
+            "neutral_path":"assets/pnj/homeless/south.png",
+            "quest_flag":"sdf",
+            "running_path":[
+                "assets/pnj/homeless/animations/running-4-frames/south","assets/pnj/homeless/animations/running-4-frames/north",
+                "assets/pnj/homeless/animations/running-4-frames/east","assets/pnj/homeless/animations/running-4-frames/west"
+            ]
+        }
+    
+    
+    ],
     "ennemis":[],
     "building":[
         
