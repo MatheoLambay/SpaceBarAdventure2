@@ -18,6 +18,7 @@ from classes.decoObject import decoObj
 
 
 
+
 def make_blur(surface, intensity=0.18):
     """
     Flou léger, ne passe jamais au noir.
@@ -125,6 +126,8 @@ class game_manager:
         self.player.set_position((x*self.tile_size-self.tile_size//2,y*self.tile_size-self.tile_size//2))
         self.game_map = Map(self.map_data, self.tile_size,textures)
 
+        # self.events = EventManager(self.player)
+
         badguy_south = load_frames("assets\pnj\ennemis\scary-walk\south")
         badguy_north = load_frames("assets/pnj/ennemis/scary-walk/north")
         badguy_east = load_frames("assets/pnj/ennemis/scary-walk/east")
@@ -190,7 +193,11 @@ class game_manager:
         for gp in data["greatpnj"]:
           # Conversion des clés en int
             nd = {int(k): v for k, v in gp[0].items()}
-            self.great_pnj.add(Bartender(gp[1],nd))
+            
+            for fk,fv in gp[2].items():
+                gp[2][fk] = load_frames(fv) 
+
+            self.great_pnj.add(Bartender(gp[2],gp[1],nd))
 
         self.map_objects = pygame.sprite.Group()
         for d in data["object"]:
@@ -286,7 +293,7 @@ class game_manager:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
-        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_map,self.game_map.get_map_data())
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_map,self.game_map.get_map_data(),dt)
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 

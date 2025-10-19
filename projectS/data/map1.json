@@ -54,7 +54,15 @@
                 "1":{"text":["Salut","bienvenu dans le SpaceBar","Tu es le nouveau ?"," Va voir BroadCaster il a besoin d'aide"],"objectif":"None","unlock":["inventory","bartender1"]}
         
             },
-            [10,9]
+            [10,9],
+            {
+                "S":"assets/pnj/bartender/animations/sad-walk/south",
+                "N":"assets/pnj/bartender/animations/sad-walk/north",
+                "E":"assets/pnj/bartender/animations/sad-walk/east",
+                "W":"assets/pnj/bartender/animations/sad-walk/west"
+
+            }
+           
     
         ],
          [
@@ -66,7 +74,15 @@
                 "4":{"text":["parfait ce connard ne m'embetera plus"],"objectif":"sdf","unlock":"None"}
                 
             },
-            [17,9]
+            [17,9],
+            {
+                "S":"assets/pnj/bartender/animations/sad-walk/south",
+                "N":"assets/pnj/bartender/animations/sad-walk/north",
+                "E":"assets/pnj/bartender/animations/sad-walk/east",
+                "W":"assets/pnj/bartender/animations/sad-walk/west"
+
+            }
+      
     
         ]
     ]

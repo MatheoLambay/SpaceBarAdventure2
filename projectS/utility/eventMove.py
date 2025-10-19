@@ -3,7 +3,7 @@
 import pygame
 
 class MoveEvent:
-    def __init__(self, player, dir_x, dir_y, distance, speed=2):
+    def __init__(self, player, dir_x, dir_y, distance,has_hitbox, speed=2):
         self.player = player
         self.dir_x = dir_x
         self.dir_y = dir_y
@@ -12,7 +12,8 @@ class MoveEvent:
         self.moved = 0
         self.done = False
         self.frame_timer = 0
-        self.direction = self.player.direction  # Initial direction
+        self.has_hitbox = has_hitbox
+        # self.direction = self.player.direction  # Initial direction
 
         # 🔹 Déterminer la direction du joueur (pour les frames)
         if dir_x > 0:
@@ -33,8 +34,9 @@ class MoveEvent:
         move_y = self.dir_y * self.speed
         self.player.rect.x += move_x
         self.player.rect.y += move_y
-        self.player.hitbox.x += move_x
-        self.player.hitbox.y += move_y
+        if self.has_hitbox:
+            self.player.hitbox.x += move_x
+            self.player.hitbox.y += move_y
         self.moved += abs(move_x) + abs(move_y)
 
         #  Gestion de l’animation
@@ -45,11 +47,19 @@ class MoveEvent:
         #         self.player.frame_index = 0
         #     self.player.image = self.player.walk_frames[int(self.player.frame_index)]
 
+        # Gestion de l’animation (corrected timing)
         currents_frames = self.player.frames[self.direction][1:]
-        self.player.frame_index += self.player.animation_speed
-        if self.player.frame_index >= len(currents_frames):
-            self.player.frame_index = 0
-        self.player.image = currents_frames[int(self.player.frame_index)]
+
+        # Increase frame timer using dt (in milliseconds)
+        self.frame_timer += dt
+
+        # Change frame every 150 ms (adjust to your liking)
+        if self.frame_timer >= 150:
+            self.frame_timer = 0
+            self.player.frame_index += 1
+            if self.player.frame_index >= len(currents_frames):
+                self.player.frame_index = 0
+            self.player.image = currents_frames[self.player.frame_index]
 
         # Si on a fini de bouger
         if self.moved >= self.distance:
