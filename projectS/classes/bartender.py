@@ -2,6 +2,7 @@ import pygame
 from utility.eventChangeTile import eventChangeTile
 from utility.eventMove import MoveEvent
 from utility.eventManager import EventManager
+from utility.eventWait import WaitEvent
 
 
 class Bartender(pygame.sprite.Sprite):
@@ -37,9 +38,10 @@ class Bartender(pygame.sprite.Sprite):
         
         self.dialogues = dialogues
 
-        self.eventMove = [MoveEvent(self,1,0,64*5,False)]
-
+        # self.eventMove = [MoveEvent(self,1,0,64*5,False)]
+        self.event_list = []
         self.events = EventManager(self)
+        self.completed_steps = set()
         
 
 
@@ -51,59 +53,7 @@ class Bartender(pygame.sprite.Sprite):
 
         if not self.control_enabled:
             return 
-
-        if self.index == 0 and len(self.dialogues[self.step]['text']) > 0:
-            if self.rect.colliderect(player.hitbox):
-                interaction_rect = self.interaction_img.get_rect(topright=self.rect.topright)
-                screen.blit(self.interaction_img, camera.apply(interaction_rect))
-                if keys[pygame.K_RETURN] and self.last_talk == 0:
-                    player.control_enabled = False
-                    self.in_talk = 1
-                    self.index = self.text_index
-
-                elif not keys[pygame.K_RETURN] and self.last_talk == 1:
-                    self.last_talk = 0
-
         
-        elif self.index == len(self.dialogues[self.step]['text']):
-
-            self.events.start_event(self.eventMove.copy())
-            self.in_talk = 0
-            player.control_enabled = True
-            self.index = 0
-            self.current_displayed_text = ""
-            self.talk_index = 0
-            self.in_talk = 0
-            self.text_index = 0
-
-            # if self.step == 1:
-            #     self.event.update()
-
-            if self.step+1 <= len(self.dialogues):
-                if self.dialogues[self.step+1]["objectif"] != "None":
-                    for i in inventory:
-                        if i == self.dialogues[self.step+1]["objectif"]:
-                            self.step +=1
-                            break
-                else:
-                    self.step +=1
-            
-            if self.dialogues[self.step]["unlock"] != "None":
-                if self.dialogues[self.step]["unlock"][0] == "door":
-
-                    tile1 = self.dialogues[self.step]["unlock"][1]
-                    tile2 = self.dialogues[self.step]["unlock"][2]
-                    
-                    event_tile.append(eventChangeTile(tile1,tile2,map))
-
-                elif self.dialogues[self.step]["unlock"][0] == "inventory":
-                    if self.dialogues[self.step]["unlock"][1] not in inventory:
-                        inventory.append(self.dialogues[self.step]["unlock"][1])
-
-
-
-
-
         if self.in_talk:
             screen.blit(self.panel,self.panel_rect)
             my_font = pygame.font.SysFont('Comic Sans MS', 20)
@@ -136,6 +86,71 @@ class Bartender(pygame.sprite.Sprite):
 
             elif not keys[pygame.K_RETURN] and self.last_talk == 1:
                 self.last_talk = 0
+
+        if self.index == 0 and len(self.dialogues[self.step]['text']) > 0:
+            if self.rect.colliderect(player.hitbox):
+                interaction_rect = self.interaction_img.get_rect(topright=self.rect.topright)
+                screen.blit(self.interaction_img, camera.apply(interaction_rect))
+                if keys[pygame.K_RETURN] and self.last_talk == 0:
+                    player.control_enabled = False
+                    self.in_talk = 1
+                    self.index = self.text_index
+
+                elif not keys[pygame.K_RETURN] and self.last_talk == 1:
+                    self.last_talk = 0
+
+        
+        elif self.index == len(self.dialogues[self.step]['text']):
+            # --- Fin du dialogue courant ---
+            self.in_talk = 0
+            player.control_enabled = True
+            self.index = 0
+            self.current_displayed_text = ""
+            self.talk_index = 0
+            self.text_index = 0
+
+            # --- 1️⃣ Exécuter l’unlock du step actuel (si pas déjà fait)
+            if self.step not in self.completed_steps:
+                current_unlock = self.dialogues[self.step].get("unlock", "None")
+
+                if current_unlock != "None":
+                    if current_unlock[0] == "door":
+                        tile1 = current_unlock[1]
+                        tile2 = current_unlock[2]
+                        event_tile.append(eventChangeTile(tile1, tile2, map))
+
+                    elif current_unlock[0] == "event":
+                        self.event_list.clear()
+                        for e in current_unlock[1:]:
+                            if e[0] == "move":
+                                x, y, distance, can_move = e[1], e[2], e[3], e[4]
+                                self.event_list.append(MoveEvent(self, x, y, 64 * distance, can_move))
+                            elif e[0] == "wait":
+                                time = e[1]
+                                self.event_list.append(WaitEvent(time))
+                        self.events.start_event(self.event_list.copy())
+
+                    elif current_unlock[0] == "inventory":
+                        if current_unlock[1] not in inventory:
+                            inventory.append(current_unlock[1])
+
+                # 🔒 Marquer ce step comme complété
+                self.completed_steps.add(self.step)
+
+            # --- 2️⃣ Passer au step suivant si l’objectif est rempli
+            if self.step + 1 <= len(self.dialogues):
+                next_objectif = self.dialogues[self.step + 1]["objectif"]
+                if next_objectif != "None":
+                    for i in inventory:
+                        if i == next_objectif:
+                            self.step += 1
+                            break
+                else:
+                    self.step += 1
+
+
+
+        
 
 
 

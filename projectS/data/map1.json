@@ -51,7 +51,8 @@
         [
 
             {
-                "1":{"text":["Salut","bienvenu dans le SpaceBar","Tu es le nouveau ?"," Va voir BroadCaster il a besoin d'aide"],"objectif":"None","unlock":["inventory","bartender1"]}
+                "1":{"text":["Salut","bienvenu dans le SpaceBar","Tu es le nouveau ?"," Va voir BroadCaster il a besoin d'aide"],"objectif":"None","unlock":["inventory","bartender1"]},
+                "2":{"text":["Salut"],"objectif":"None","unlock":"None"}
         
             },
             [10,9],
@@ -71,7 +72,8 @@
                 "1":{"text":["salut"],"objectif":"None","unlock":"None"},
                 "2":{"text":["le nouveau, parfait","j'ai un problème, y'a un sdf bloqué"],"objectif":"bartender1","unlock":["door",[-4],1]},
                 "3":{"text":["Alors le sdf ?"],"objectif":"None","unlock":"None"},
-                "4":{"text":["parfait ce connard ne m'embetera plus"],"objectif":"sdf","unlock":"None"}
+                "4":{"text":["parfait ce connard ne m'embetera plus","suis moi"],"objectif":"sdf","unlock":["event",["move",1,0,5,0],["wait",1000],["move",0,-1,3,0]]},
+                "5":{"text":["Donc tu es la pour nous aider à rétablir le caca ?"],"objectif":"None","unlock":"None"}
                 
             },
             [17,9],
