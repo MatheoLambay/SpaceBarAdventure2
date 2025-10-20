@@ -98,6 +98,7 @@ class game_manager:
         
         self.load_game(data)
         #eventChangeTile(-4, 1, data["map_data"])
+        self.event_change_tile = []
         self.event_change_map = []
 
         self.pause_flag = 0
@@ -162,7 +163,7 @@ class game_manager:
         
 
         # for tile_pos in pnj_positions:
-        #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(event_change_map)))
+        #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(event_change_tile)))
             
 
         self.buildings = []
@@ -293,7 +294,7 @@ class game_manager:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
-        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_map,self.game_map.get_map_data(),dt)
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_tile,self.game_map.get_map_data(),dt,self.event_change_map)
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
@@ -305,19 +306,28 @@ class game_manager:
             b.draw(self.screen, self.camera, self.player.hitbox)
 
         for e in self.event_tiles:
-            event = e.detect(self.game_map.get_tile(self.player.hitbox.center)) 
+            event = e.update(self.game_map.get_tile(self.player.hitbox.center)) 
             if event != 0:
                 data = read_data(event)
-                
                 self.load_game(data)
+
+    
 
 
         #ici pour les caisses une fois détruite 
-        for t in range(len(self.event_change_map)):
-            new = self.event_change_map[t].switch_tile()
+        for t in range(len(self.event_change_tile)):
+            new = self.event_change_tile[t].switch_tile()
             self.game_map.new_map_data(new)
-            self.event_change_map.pop(t)
+            self.event_change_tile.pop(t)
             self.obstacles = self.game_map.get_obstacles()
+
+        
+        for e in self.event_change_map:
+            
+            data = read_data("projectS\data\%s.json"%(e))
+            self.event_change_map.pop(0)
+            self.load_game(data)
+            
                
         
         # dessiner obstacles avec offset caméra

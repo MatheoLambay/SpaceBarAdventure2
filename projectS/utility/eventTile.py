@@ -6,13 +6,9 @@ class eventTile(pygame.sprite.Sprite):
         self.tile = tile
         self.new_map = new_map
        
-
-    def detect(self,current_tile):
+    def update(self,current_tile):
         if current_tile == self.tile:
             return self.new_map
         return False
-
-    def update(self,current_tile):
-        pass
         
            

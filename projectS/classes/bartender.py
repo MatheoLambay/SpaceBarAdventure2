@@ -5,6 +5,7 @@ from utility.eventManager import EventManager
 from utility.eventWait import WaitEvent
 
 
+
 class Bartender(pygame.sprite.Sprite):
     def __init__(self,frames_walk,pos,dialogues):
         super().__init__()
@@ -38,7 +39,7 @@ class Bartender(pygame.sprite.Sprite):
         
         self.dialogues = dialogues
 
-        # self.eventMove = [MoveEvent(self,1,0,64*5,False)]
+        
         self.event_list = []
         self.events = EventManager(self)
         self.completed_steps = set()
@@ -47,7 +48,7 @@ class Bartender(pygame.sprite.Sprite):
 
 
 
-    def update(self,player,keys,screen,camera,inventory,event_tile,map,dt):
+    def update(self,player,keys,screen,camera,inventory,event_tile,map,dt,event_tp):
        
         self.events.update(dt)
 
@@ -128,6 +129,9 @@ class Bartender(pygame.sprite.Sprite):
                             elif e[0] == "wait":
                                 time = e[1]
                                 self.event_list.append(WaitEvent(time))
+                            elif e[0] == "TP":
+                                event_tp.append(e[1])
+
                         self.events.start_event(self.event_list.copy())
 
                     elif current_unlock[0] == "inventory":
