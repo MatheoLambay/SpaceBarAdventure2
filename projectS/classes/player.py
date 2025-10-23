@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.crosshair_hitbox = self.rect_crosshair.inflate(-20, -20) 
         self.crosshair_radius = 50
         self.last_click_state = 0
-        self.life = 10
+        self.life = 5
         self.max_life = 10
         self.is_punching = 0
         

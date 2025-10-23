@@ -10,11 +10,12 @@ from utility.eventManager import EventManager
 from utility.eventMove import MoveEvent
 from utility.eventWait import WaitEvent
 from classes.badguy import Badguy
-from classes.items import items
+from classes.informations_panel import infoPanel
 from utility.eventTile import eventTile
 from utility.eventChangeTile import eventChangeTile
 from classes.bartender import Bartender
 from classes.decoObject import decoObj
+from classes.healpad import healPad
 
 
 
@@ -202,7 +203,12 @@ class game_manager:
 
         self.map_objects = pygame.sprite.Group()
         for d in data["object"]:
-            new_d = items(d[0],d[1],self.tile_size)
+            if d[0] == "map_indiquateur":
+                new_d = infoPanel(d[1],d[2],self.tile_size)
+            elif d[0] == "healpad":
+                new_d = healPad(d[1],d[2],self.tile_size)
+            else:
+                break
             self.map_objects.add(new_d)
             self.game_map.add_obstacles(new_d.hitbox)
                 
