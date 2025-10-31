@@ -159,10 +159,15 @@ class game_manager:
             
             self.pnjs.add(PNJ(p["neutral_path"], p["coord"], self.tile_size, p["text"],p["can_attack"],temp_dict,badguy_fight_frames,p["quest_flag"]))
             
-            
-        self.decoObj = decoObj("assets\map\spaceship1person.png",(1,1),64)
-        
+        self.decoObj_first_plan = []
+        self.decoObj_second_plan = []
+        for do in data["decoObject"]:
+            if do[0] == "first_plan":
+                self.decoObj_first_plan.append(decoObj(do[1],do[2],self.tile_size))
+            elif do[0] == "second_plan":
+                self.decoObj_second_plan.append(decoObj(do[1],do[2],self.tile_size))
 
+        
         # for tile_pos in pnj_positions:
         #     self.pnjs.append(PNJ("assets/player/animations/walk-1/south/frame_000.png", tile_pos, self.tile_size, str(event_change_tile)))
             
@@ -273,6 +278,8 @@ class game_manager:
         # --- Rendu ---
         self.game_map.draw(self.screen, self.camera)
 
+        for do in self.decoObj_second_plan:
+            self.screen.blit(do.image,self.camera.apply(do.rect))
 
         for obj in self.map_objects:
             self.screen.blit(obj.image,self.camera.apply(obj.rect))
@@ -295,6 +302,7 @@ class game_manager:
         
         # print(game_map.get_tile(player.hitbox.center)) # Update current_tile)
         
+        
         self.pnjs.update(self.player,self.screen,self.camera,keys,self.obstacles,self.map_width,self.map_height,self.inventory)
         for p in self.pnjs:
             self.screen.blit(p.image,self.camera.apply(p.rect))
@@ -304,10 +312,9 @@ class game_manager:
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
-
+        for do in self.decoObj_first_plan:
+            self.screen.blit(do.image,self.camera.apply(do.rect))
         
-        self.screen.blit(self.decoObj.image,self.camera.apply(self.decoObj.rect))
-
         for b in self.buildings:
             b.draw(self.screen, self.camera, self.player.hitbox)
 

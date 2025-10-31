@@ -8,21 +8,36 @@ class healPad(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(-20,-10)
         self.last_time = 0
         self.interval = 800
+        self.stock = 100
 
-        
-
+        self.my_font = pygame.font.SysFont('Comic Sans MS', 15)
+        self.text= self.my_font.render(str(self.stock), False, (0, 255, 0))
+        self.text_rect = self.text.get_rect(topright=(pos[0]*tile_size,pos[1]*tile_size))
         self.interaction_img = pygame.image.load("assets/pnj/interaction.png").convert_alpha()
+        self.interaction_rect = self.interaction_img.get_rect(topright=self.hitbox.topright)
 
     def update(self,screen,player,keys,camera):
 
         if self.rect.colliderect(player.hitbox):
-            interaction_rect = self.interaction_img.get_rect(topright=self.hitbox.topright)
-            screen.blit(self.interaction_img, camera.apply(interaction_rect))
-            if keys[pygame.K_RETURN]:
+            txt = str(self.stock) + "%"
+            
+            if self.stock > 0:
+                color = (0, 255, 0)
+            else:
+                color = (255, 0, 0)
+
+            self.text= self.my_font.render(txt, False, color)
+            
+            screen.blit(self.interaction_img, camera.apply(self.interaction_rect))
+            
+            screen.blit(self.text, camera.apply(self.text_rect))
+            if keys[pygame.K_RETURN] and self.stock > 0:
                 if player.max_life > player.life:
                     current_time = pygame.time.get_ticks()
                     if current_time - self.last_time >= self.interval:
                         player.life +=1
+                        self.stock -=1
                         self.last_time = current_time
+                
 
     
