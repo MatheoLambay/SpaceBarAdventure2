@@ -112,9 +112,6 @@ class game_manager:
 
         # self.event_tiles = pygame.sprite.Group(ev)
 
-       
-
-
 
     def load_game(self,data):
         self.map_data = data["map_data"]
@@ -175,13 +172,7 @@ class game_manager:
         self.buildings = []
         self.roofs = data["building"]
         for roof in self.roofs:
-        
-            
             self.buildings.append(Building(roof[0],roofs_tiles, self.tile_size, pos_x=roof[1][0], pos_y=roof[1][1]))
-        
-        
-        
-
         
         self.map_width = len(self.map_data[0]) * self.tile_size
         self.map_height = len(self.map_data) * self.tile_size
@@ -308,7 +299,7 @@ class game_manager:
             self.screen.blit(p.image,self.camera.apply(p.rect))
             pygame.draw.rect(self.screen, "blue", self.camera.apply(p.hitbox),1)
         
-        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_tile,self.game_map.get_map_data(),dt,self.event_change_map)
+        
         for g in self.great_pnj:
             self.screen.blit(g.image,self.camera.apply(g.rect))
 
@@ -317,6 +308,8 @@ class game_manager:
         
         for b in self.buildings:
             b.draw(self.screen, self.camera, self.player.hitbox)
+
+        self.great_pnj.update(self.player,keys,self.screen,self.camera,self.inventory,self.event_change_tile,self.game_map.get_map_data(),dt,self.event_change_map)
 
         for e in self.event_tiles:
             event = e.update(self.game_map.get_tile(self.player.hitbox.center)) 

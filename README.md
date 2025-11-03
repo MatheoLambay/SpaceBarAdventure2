@@ -1,5 +1,4 @@
 # SpaceBarAdventure2
 
-une classe par type d'item spécial 
-plus de hitbox différentes de 64x64
-adapter skin pnj avec json
+
+rajouter objets avec hitbox mais pas d'interaction
