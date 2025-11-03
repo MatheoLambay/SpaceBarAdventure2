@@ -70,6 +70,46 @@ def load_tileset_as_dict(path, tile_size, positive_ids_only=True):
 
     return tiles
 
+import pygame
+
+import pygame
+
+def load_character_sprites(path, tile_size=64, cols=7, rows=4, directions=("S", "N", "E", "W"), scale=None):
+    """
+    Charge une spritesheet contenant 4x7 (rows x cols) frames.
+    Une ligne = une direction dans l'ordre ('S','N','E','W').
+    Renvoie un dict {direction: [Surface, ...]} avec chaque frame centrée et copiée.
+    - path : chemin vers la spritesheet
+    - tile_size : taille d'une frame (ici 64)
+    - cols, rows : nombre de colonnes et lignes (7x4 par défaut)
+    - scale : facteur (float) ou None pour garder la taille tile_size
+    """
+    img = pygame.image.load(path).convert_alpha()
+    img_w, img_h = img.get_size()
+    fw = fh = tile_size
+
+    sprites = {}
+    for r in range(rows):
+        row_frames = []
+        for c in range(cols):
+            x = c * fw
+            y = r * fh
+            if x + fw <= img_w and y + fh <= img_h:
+                frame = img.subsurface((x, y, fw, fh)).copy()
+                if scale is not None and scale != 1.0:
+                    sw = max(1, int(fw * scale))
+                    sh = max(1, int(fh * scale))
+                    frame = pygame.transform.smoothscale(frame, (sw, sh))
+                row_frames.append(frame)
+        if r < len(directions):
+            sprites[directions[r]] = row_frames
+
+    # assure que chaque direction existe (retourne liste vide si manquante)
+    for d in directions:
+        sprites.setdefault(d, [])
+
+    return sprites
+
 def read_data(link):
     with open(link,"r", encoding='utf-8') as r:
         return json.load(r)
@@ -92,7 +132,10 @@ class game_manager:
         frames_fight_west = load_frames("assets/player/animations/cross-punch/west")
         frames_fight = {"S":frames_fight_south, "N":frames_fight_north, "E":frames_fight_east, "W":frames_fight_west}
 
+       
+
         x,y = data["player_coord"]
+        frames = load_character_sprites("assets/player/animations/walk.png")
         self.player = Player(frames,frames_fight, pos=(x*self.tile_size, y*self.tile_size))
         self.inventory = []
         self.all_sprites = pygame.sprite.Group(self.player)
