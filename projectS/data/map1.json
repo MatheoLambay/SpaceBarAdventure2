@@ -41,11 +41,11 @@
         [ 20,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16, 21,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
     ],
 
-    "object":[["map_indiquateur","assets/map/map_indiquateur.png",[4,13]],["healpad","assets/map/heal_pad.png",[8,7]]],
+    "object":[["map_indiquateur","assets/map/map_indiquateur.png",[4,28]],["healpad","assets/map/heal_pad.png",[8,22]]],
     "decoObject":[
-        ["first_plan","assets/map/spaceship1person.png",[1,1]],
-        ["first_plan","assets/map/spaceship2person.png",[3,16]],
-        ["second_plan","assets/map/tag_on_wall.png",[9,6]],
+        ["first_plan","assets/map/spaceship1person.png",[1,16]],
+        ["first_plan","assets/map/spaceship2person.png",[3,31]],
+        ["second_plan","assets/map/tag_on_wall.png",[9,31]],
         ["second_plan","assets/map/ship_board.png",[17,3]]
     ],
     "pnjs":
