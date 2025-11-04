@@ -121,11 +121,11 @@ class game_manager:
 
         data = read_data("projectS\data\map1.json")
         
-        frames_south = load_frames("assets/player/animations/walk-1/south")  # 1.png = repos, 2.png+ = marche
-        frames_north = load_frames("assets/player/animations/walk-1/north")
-        frames_east = load_frames("assets/player/animations/walk-1/east")
-        frames_west = load_frames("assets/player/animations/walk-1/west")
-        frames = {"S":frames_south, "N":frames_north, "E":frames_east, "W":frames_west}
+        # frames_south = load_frames("assets/player/animations/walk-1/south")  # 1.png = repos, 2.png+ = marche
+        # frames_north = load_frames("assets/player/animations/walk-1/north")
+        # frames_east = load_frames("assets/player/animations/walk-1/east")
+        # frames_west = load_frames("assets/player/animations/walk-1/west")
+        # frames = {"S":frames_south, "N":frames_north, "E":frames_east, "W":frames_west}
         frames_fight_south = load_frames("assets/player/animations/cross-punch/south")
         frames_fight_north = load_frames("assets/player/animations/cross-punch/north")
         frames_fight_east = load_frames("assets/player/animations/cross-punch/east")

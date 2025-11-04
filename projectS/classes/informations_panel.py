@@ -18,6 +18,7 @@ class infoPanel(pygame.sprite.Sprite):
             screen.blit(self.interaction_img, camera.apply(interaction_rect))
             if keys[pygame.K_RETURN] and self.last_talk == 0:
                 # player.control_enabled = False
+                print('caca')
                 self.in_talk = 1
 
             elif not keys[pygame.K_RETURN] and self.last_talk == 1:

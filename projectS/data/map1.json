@@ -41,7 +41,14 @@
         [ 20,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16, 21,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
     ],
 
-    "object":[["map_indiquateur","assets/map/map_indiquateur.png",[4,28]],["healpad","assets/map/heal_pad.png",[8,22]]],
+    "object":[
+        ["map_indiquateur","assets/map/map_indiquateur.png",[4,28]],
+        ["healpad","assets/map/heal_pad.png",[8,22]],
+        ["map_indiquateur","assets/map/pod1.png",[15,14]],
+        ["map_indiquateur","assets/map/pod2.png",[16,14]],
+        ["map_indiquateur","assets/map/pod3.png",[17,14]]
+    
+    ],
     "decoObject":[
         ["first_plan","assets/map/spaceship1person.png",[1,16]],
         ["first_plan","assets/map/spaceship2person.png",[3,31]],
