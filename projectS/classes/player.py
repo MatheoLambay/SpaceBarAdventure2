@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.crosshair_hitbox = self.rect_crosshair.inflate(-20, -20) 
         self.crosshair_radius = 50
         self.last_click_state = 0
-        self.life = 5
+        self.life = 10
         self.max_life = 10
         self.is_punching = 0
         
@@ -62,6 +62,12 @@ class Player(pygame.sprite.Sprite):
         self.hitbox.center = (x,y)
         self.rect.center = (x,y)
 
+    def change_skin(self,frames,frames_fight):
+        self.frames = frames
+        self.frames_fight = frames_fight
+        self.frame_index = 0
+        self.frame_fight_index = 0
+        self.image = self.frames[self.direction][0]
 
     def update(self, keys, obstacles, game_map,ennemis,pnjs): # Add game_map as argument
         if not self.control_enabled:
