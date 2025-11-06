@@ -17,10 +17,7 @@ class skinSelect(pygame.sprite.Sprite):
         
         self.interaction_img = pygame.image.load("assets/pnj/interaction.png").convert_alpha()
 
-    def update(self,screen,player,keys,camera):
-        pygame.draw.rect(screen, (0, 255, 0), camera.apply(self.skin1_rect), 1)
-        pygame.draw.rect(screen, (255, 255, 0), camera.apply(self.skin2_rect), 1)
-        pygame.draw.rect(screen, (0, 255, 255), camera.apply(self.skin3_rect), 1)
+    def update(self,screen,player,keys,camera,inventory):
 
         if self.rect.colliderect(player.hitbox):
             if self.skin1_rect.colliderect(player.hitbox):
@@ -44,6 +41,9 @@ class skinSelect(pygame.sprite.Sprite):
                 frames_fight = {"S":frames_fight_south, "N":frames_fight_north, "E":frames_fight_east, "W":frames_fight_west}
 
                 player.change_skin(skin,frames_fight)
+                if 'skinSelected' not in inventory:
+                    inventory.append('skinSelected')
+                self.last_talk = 1
                  
 
             elif not keys[pygame.K_RETURN] and self.last_talk == 1:

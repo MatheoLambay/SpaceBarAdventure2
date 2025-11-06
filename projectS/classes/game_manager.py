@@ -10,12 +10,12 @@ from utility.eventManager import EventManager
 from utility.eventMove import MoveEvent
 from utility.eventWait import WaitEvent
 from classes.badguy import Badguy
-from classes.informations_panel import infoPanel
 from utility.eventTile import eventTile
 from utility.eventChangeTile import eventChangeTile
 from classes.bartender import Bartender
 from classes.decoObject import decoObj
-from classes.healpad import healPad
+from classes.interactiveObject.healpad import healPad
+from classes.interactiveObject.informations_panel import infoPanel
 from classes.interactiveObject.skinSelect import skinSelect
 from utility.filesTools import read_data, load_tileset_as_dict, load_frames, load_character_sprites, make_blur
 
@@ -139,16 +139,6 @@ class game_manager:
         self.obstacles = self.game_map.get_obstacles()
 
 
-        self.great_pnj = pygame.sprite.Group()
-        for gp in data["greatpnj"]:
-          # Conversion des clés en int
-            nd = {int(k): v for k, v in gp[0].items()}
-            
-            for fk,fv in gp[2].items():
-                gp[2][fk] = load_frames(fv) 
-
-            self.great_pnj.add(Bartender(gp[2],gp[1],nd))
-
         self.map_objects = pygame.sprite.Group()
         for d in data["object"]:
             if d[0] == "map_indiquateur":
@@ -161,6 +151,15 @@ class game_manager:
                 break
             self.map_objects.add(new_d)
             self.game_map.add_obstacles(new_d.hitbox)
+
+        self.great_pnj = pygame.sprite.Group()
+        for gp in data["greatpnj"]:
+          # Conversion des clés en int
+            nd = {int(k): v for k, v in gp[0].items()}
+            print(gp[2])
+            sprt = load_character_sprites(gp[2]) 
+
+            self.great_pnj.add(Bartender(sprt,gp[1],nd))
                 
 
             
@@ -228,7 +227,7 @@ class game_manager:
 
         for obj in self.map_objects:
             self.screen.blit(obj.image,self.camera.apply(obj.rect))
-            obj.update(self.screen,self.player,keys,self.camera)
+            obj.update(self.screen,self.player,keys,self.camera,self.inventory)
         # pygame.draw.rect(self.screen, "blue", self.camera.apply(self.map_indicator.hitbox),1)
 
         
@@ -280,7 +279,9 @@ class game_manager:
             self.game_map.new_map_data(new)
             self.event_change_tile.pop(t)
             self.obstacles = self.game_map.get_obstacles()
-
+            for ob in self.map_objects:
+                self.game_map.add_obstacles(ob.hitbox)
+            print("new_obj set !")
         
         for e in self.event_change_map:
             

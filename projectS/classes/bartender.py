@@ -110,33 +110,58 @@ class Bartender(pygame.sprite.Sprite):
             self.talk_index = 0
             self.text_index = 0
 
-            # --- 1️⃣ Exécuter l’unlock du step actuel (si pas déjà fait)
+            # --- Exécuter l’unlock du step actuel (si pas déjà fait)
             if self.step not in self.completed_steps:
                 current_unlock = self.dialogues[self.step].get("unlock", "None")
 
                 if current_unlock != "None":
-                    if current_unlock[0] == "door":
-                        tile1 = current_unlock[1]
-                        tile2 = current_unlock[2]
-                        event_tile.append(eventChangeTile(tile1, tile2, map))
+                    for u in current_unlock:
+                        if u[0] == "door":
+                            tile1 = u[1]
+                            tile2 = u[2]
+                            event_tile.append(eventChangeTile(tile1, tile2, map))
 
-                    elif current_unlock[0] == "event":
-                        self.event_list.clear()
-                        for e in current_unlock[1:]:
-                            if e[0] == "move":
-                                x, y, distance, can_move = e[1], e[2], e[3], e[4]
-                                self.event_list.append(MoveEvent(self, x, y, 64 * distance, can_move))
-                            elif e[0] == "wait":
-                                time = e[1]
-                                self.event_list.append(WaitEvent(time))
-                            elif e[0] == "TP":
-                                event_tp.append(e[1])
+                        if u[0] == "event":
+                            self.event_list.clear()
+                            for e in u[1:]:
+                                if e[0] == "move":
+                                    print("move")
+                                    x, y, distance, can_move = e[1], e[2], e[3], e[4]
+                                    self.event_list.append(MoveEvent(self, x, y, 64 * distance, can_move))
+                                elif e[0] == "wait":
+                                    time = e[1]
+                                    self.event_list.append(WaitEvent(time))
+                                elif e[0] == "TP":
+                                    event_tp.append(e[1])
 
-                        self.events.start_event(self.event_list.copy())
+                            self.events.start_event(self.event_list.copy())
 
-                    elif current_unlock[0] == "inventory":
-                        if current_unlock[1] not in inventory:
-                            inventory.append(current_unlock[1])
+                        if u[0] == "inventory":
+                            if u[1] not in inventory:
+                                inventory.append(u[1])
+
+                    # if current_unlock[0] == "door":
+                    #     tile1 = current_unlock[1]
+                    #     tile2 = current_unlock[2]
+                    #     event_tile.append(eventChangeTile(tile1, tile2, map))
+
+                    # elif current_unlock[0] == "event":
+                    #     self.event_list.clear()
+                    #     for e in current_unlock[1:]:
+                    #         if e[0] == "move":
+                    #             x, y, distance, can_move = e[1], e[2], e[3], e[4]
+                    #             self.event_list.append(MoveEvent(self, x, y, 64 * distance, can_move))
+                    #         elif e[0] == "wait":
+                    #             time = e[1]
+                    #             self.event_list.append(WaitEvent(time))
+                    #         elif e[0] == "TP":
+                    #             event_tp.append(e[1])
+
+                    #     self.events.start_event(self.event_list.copy())
+
+                    # elif current_unlock[0] == "inventory":
+                    #     if current_unlock[1] not in inventory:
+                    #         inventory.append(current_unlock[1])
 
                 # 🔒 Marquer ce step comme complété
                 self.completed_steps.add(self.step)

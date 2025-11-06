@@ -16,7 +16,7 @@ class healPad(pygame.sprite.Sprite):
         self.interaction_img = pygame.image.load("assets/pnj/interaction.png").convert_alpha()
         self.interaction_rect = self.interaction_img.get_rect(topright=self.hitbox.topright)
 
-    def update(self,screen,player,keys,camera):
+    def update(self,screen,player,keys,camera,inventory):
 
         if self.rect.colliderect(player.hitbox):
             txt = str(self.stock) + "%"

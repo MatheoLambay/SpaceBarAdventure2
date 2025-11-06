@@ -12,7 +12,7 @@ class infoPanel(pygame.sprite.Sprite):
 
         self.interaction_img = pygame.image.load("assets/pnj/interaction.png").convert_alpha()
 
-    def update(self,screen,player,keys,camera):
+    def update(self,screen,player,keys,camera,inventory):
         if self.rect.colliderect(player.hitbox):
             interaction_rect = self.interaction_img.get_rect(topright=self.hitbox.topright)
             screen.blit(self.interaction_img, camera.apply(interaction_rect))
