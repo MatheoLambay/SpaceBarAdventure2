@@ -54,10 +54,11 @@
     
     ],
     "decoObject":[
-        ["first_plan","assets/map/spaceship1person.png",[1,16]],
-        ["first_plan","assets/map/spaceship2person.png",[3,31]],
-        ["second_plan","assets/map/tag_on_wall.png",[9,31]],
-        ["second_plan","assets/map/ship_board.png",[17,3]]
+        ["first_plan","assets/map/spaceship1person.png",[1,16],0],
+        ["first_plan","assets/map/spaceship2person.png",[3,31],0],
+        ["second_plan","assets/map/ring.png",[28,27],1],
+        ["second_plan","assets/map/tag_on_wall.png",[9,31],0],
+        ["second_plan","assets/map/ship_board.png",[17,3],0]
     ],
     "pnjs":
     [

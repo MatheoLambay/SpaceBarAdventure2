@@ -114,8 +114,14 @@ class game_manager:
         for do in data["decoObject"]:
             if do[0] == "first_plan":
                 self.decoObj_first_plan.append(decoObj(do[1],do[2],self.tile_size))
+               
             elif do[0] == "second_plan":
                 self.decoObj_second_plan.append(decoObj(do[1],do[2],self.tile_size))
+
+            if do[3] == True: #as hitbox
+                self.game_map.add_obstacles(self.decoObj_second_plan[-1].rect)
+        
+                
 
         
         # for tile_pos in pnj_positions:
