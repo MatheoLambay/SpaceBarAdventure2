@@ -17,6 +17,7 @@ from classes.decoObject import decoObj
 from classes.interactiveObject.healpad import healPad
 from classes.interactiveObject.informations_panel import infoPanel
 from classes.interactiveObject.skinSelect import skinSelect
+from classes.interactiveObject.training_bud import training_bud
 from utility.filesTools import read_data, load_tileset_as_dict, load_frames, load_character_sprites, make_blur
 
 
@@ -147,10 +148,14 @@ class game_manager:
                 new_d = healPad(d[1],d[2],self.tile_size)
             elif d[0] == "skin_select":
                 new_d = skinSelect(d[1],d[2],self.tile_size)
+            elif d[0] == "training_bud":
+                new_d = training_bud(load_character_sprites(d[1],cols=4,rows=1),d[2],self.tile_size)
             else:
                 break
             self.map_objects.add(new_d)
             self.game_map.add_obstacles(new_d.hitbox)
+
+        self.map_objects.add() 
 
         self.great_pnj = pygame.sprite.Group()
         for gp in data["greatpnj"]:
