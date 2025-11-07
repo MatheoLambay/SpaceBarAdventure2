@@ -49,7 +49,8 @@ class game_manager:
         self.player = Player(frames,frames_fight, pos=(x*self.tile_size, y*self.tile_size))
         self.inventory = []
         self.all_sprites = pygame.sprite.Group(self.player)
-        
+        self.player.show_crosshair = False
+
         self.load_game(data)
         #eventChangeTile(-4, 1, data["map_data"])
         self.event_change_tile = []
@@ -116,7 +117,7 @@ class game_manager:
                 self.decoObj_first_plan.append(decoObj(do[1],do[2],self.tile_size))
                
             elif do[0] == "second_plan":
-                self.decoObj_second_plan.append(decoObj(do[1],do[2],self.tile_size))
+                self.decoObj_second_plan.append(decoObj(do[1],do[2],self.tile_size,do[3]))
 
             if do[3] == True: #as hitbox
                 self.game_map.add_obstacles(self.decoObj_second_plan[-1].rect)
@@ -292,6 +293,10 @@ class game_manager:
             self.obstacles = self.game_map.get_obstacles()
             for ob in self.map_objects:
                 self.game_map.add_obstacles(ob.hitbox)
+
+            for ob in self.decoObj_second_plan:
+                if ob.has_hitbox:
+                    self.game_map.add_obstacles(ob.rect) 
             print("new_obj set !")
         
         for e in self.event_change_map:
@@ -306,8 +311,9 @@ class game_manager:
         # for obs in obstacles:
         #     pygame.draw.rect(self.screen, "red", self.camera.apply(obs),1)
 
-        self.player.draw_crosshair(self.screen, self.camera)
-        self.player.draw_life(self.screen, self.camera)
+        if self.player.show_crosshair:
+            self.player.draw_crosshair(self.screen, self.camera)
+            self.player.draw_life(self.screen, self.camera)
         
 
         # print(self.inventory)

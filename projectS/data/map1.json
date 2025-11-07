@@ -57,7 +57,6 @@
         ["first_plan","assets/map/spaceship1person.png",[1,16],0],
         ["first_plan","assets/map/spaceship2person.png",[3,31],0],
         ["second_plan","assets/map/ring.png",[28,27],1],
-        ["second_plan","assets/map/tag_on_wall.png",[9,31],0],
         ["second_plan","assets/map/ship_board.png",[17,3],0]
     ],
     "pnjs":
@@ -123,7 +122,8 @@
                 "1":{"text":["salut"],"objectif":"None","unlock":"None"},
                 "2":{"text":["Tu es le nouveau ?","parfait, suis moi on va commencer par te donner ton équipement"],"objectif":"welcome","unlock":[["door",[-4],1],["event",["move",1,0,2,0],["move",0,-1,9,0],["look_at","S"]]]},
                 "3":{"text":["Tu as ton équipement ?"],"objectif":"None","unlock":"None"},
-                "4":{"text":["belle couleur"],"objectif":"skinSelected","unlock":"None"}
+                "4":{"text":["Bien","suis moi, je vais t'apprendre les bases"],"objectif":"skinSelected","unlock":[["event",["move",0,1,10,0],["move",1,0,6,0],["move",1,0,1,0],["look_at","S"]]]},
+                "5":{"text":["Active ton armure"],"objectif":"skinSelected","unlock":[["event",["can_attack",1]]]}
                 
                 
             },

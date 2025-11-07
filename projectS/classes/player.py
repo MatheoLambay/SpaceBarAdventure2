@@ -160,7 +160,8 @@ class Player(pygame.sprite.Sprite):
         self.foot_hitbox.topleft = (self.hitbox.left, self.hitbox.bottom - 10)
 
         # --- Mouse Click Detection ---
-        
+        if not self.show_crosshair:
+            return
         if pygame.mouse.get_pressed()[0] and self.last_click_state == 0 and self.is_punching == 0:
             self.is_punching = 1
             print("ici")

@@ -136,6 +136,9 @@ class Bartender(pygame.sprite.Sprite):
                                 elif e[0] == "look_at":
                                     print("look_at")
                                     self.event_list.append(LookAtEvent(self, e[1]))
+                                elif e[0] =="can_attack":
+                                    player.show_crosshair= e[1]
+                                    print(e[1])
 
                             self.events.start_event(self.event_list.copy())
 
