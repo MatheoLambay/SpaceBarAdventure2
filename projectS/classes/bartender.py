@@ -3,7 +3,7 @@ from utility.eventChangeTile import eventChangeTile
 from utility.eventMove import MoveEvent
 from utility.eventManager import EventManager
 from utility.eventWait import WaitEvent
-
+from utility.eventLookAt import LookAtEvent
 
 
 class Bartender(pygame.sprite.Sprite):
@@ -11,7 +11,7 @@ class Bartender(pygame.sprite.Sprite):
         super().__init__()
 
         self.frames = frames_walk
-        self.direction = "W"
+        self.direction = "S"
         self.image = self.frames[self.direction][0]
         x,y = pos
         
@@ -133,6 +133,9 @@ class Bartender(pygame.sprite.Sprite):
                                     self.event_list.append(WaitEvent(time))
                                 elif e[0] == "TP":
                                     event_tp.append(e[1])
+                                elif e[0] == "look_at":
+                                    print("look_at")
+                                    self.event_list.append(LookAtEvent(self, e[1]))
 
                             self.events.start_event(self.event_list.copy())
 
