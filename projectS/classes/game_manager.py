@@ -49,7 +49,7 @@ class game_manager:
         self.player = Player(frames,frames_fight, pos=(x*self.tile_size, y*self.tile_size))
         self.inventory = []
         self.all_sprites = pygame.sprite.Group(self.player)
-        self.player.show_crosshair = False
+        # self.player.show_crosshair = False
 
         self.load_game(data)
         #eventChangeTile(-4, 1, data["map_data"])
